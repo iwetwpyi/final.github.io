@@ -588,10 +588,22 @@ button:active {
   <img src="https://win98icons.alexmeub.com/icons/png/mailbox_world-0.png" />
   <span>메일함</span>
 </div>
-
+ <hr />
+  <!-- 시작 메뉴 항목 중 종료 버튼 -->
+<div class="start-item" style="margin-top: auto;" id="shutdownButton">
+  <img src="https://img.icons8.com/fluency/20/shutdown.png" />
+  <span>종료</span>
+</div>
     </div>
   </div>
   
+<script>
+  // 종료 버튼 클릭 이벤트
+  document.getElementById('shutdownButton').addEventListener('click', function() {
+    // 종료 버튼 클릭 시 index.html로 이동
+    window.location.href = 'index.html';  // index.html 파일로 이동
+  });
+</script>
 
 
 
