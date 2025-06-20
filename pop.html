@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Facebook - Windows 98 Style</title>
+  <link rel="stylesheet" href="https://unpkg.com/98.css">
+  <style>
+    body {
+      padding: 20px;
+      font-family: 'Microsoft Sans Serif', sans-serif;
+    }
+    .window {
+      width: 400px;
+      margin: 50px auto;
+    }
+    .field-row {
+      margin-bottom: 10px;
+    }
+    .field-row label {
+      width: 80px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="window">
+    <div class="title-bar">
+      <div class="title-bar-text">Facebook Login</div>
+      <div class="title-bar-controls">
+        <button aria-label="Close"></button>
+      </div>
+    </div>
+    <div class="window-body">
+      <div class="field-row">
+        <label for="email">Email:</label>
+        <input id="email" type="text" />
+      </div>
+      <div class="field-row">
+        <label for="password">Password:</label>
+        <input id="password" type="password" />
+      </div>
+      <div class="field-row" style="justify-content: flex-end;">
+        <button>Log In</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

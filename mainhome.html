@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>타임라인 애니메이션</title>
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/pretendard.css" rel="stylesheet" />
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #353535;
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Pretendard', sans-serif;
+    }
+
+        header {
+            height: 100vh; /* 화면 높이만큼 */
+            display: flex;
+            justify-content: center; /* 콘텐츠를 수평 중앙 정렬 */
+            align-items: center; /* 콘텐츠를 수직 중앙 정렬 */
+            text-align: center;
+            flex-direction: column; /* 내용들이 세로로 배치되도록 */
+            position: relative;
+        }
+     /* ✅ 네비게이션 바 */
+.header-area {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    height: 60px;  /* 기본 높이 */
+    transition: transform 0.3s ease-in-out; /* 부드러운 슬라이드 애니메이션 */
+    transform: translateY(0);  /* 기본 위치는 화면에 보이도록 */
+}
+
+/* ✅ 스크롤 시 헤더 숨기기 */
+.header-area.hidden {
+    transform: translateY(-100%);  /* 위로 숨김 */
+}
+
+/* 메뉴가 열렸을 때 위에서 아래로 내려오는 애니메이션 효과 */
+.header-area.expanded {
+    height: 100vh; /* 메뉴가 전체 화면을 차지하도록 설정 */
+    background: #084E6F;/* 흰색 배경 */
+    flex-direction: column;
+    justify-content: flex-start; /* 메뉴 항목들이 세로로 정렬되도록 */
+    padding-top: 20px; /* 위쪽 여백 추가 */
+    transition: height 0.4s ease-in-out;
+}
+
+.nav-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.nav-left {
+    display: flex;
+    gap: 20px;
+}
+
+.nav a {
+    font-size: 16px;
+    font-weight: 500;
+    color: #000000;  /* 기본 글자색 유지 */
+    text-decoration: none; /* 밑줄 제거 */
+}
+
+.nav a:visited,
+.nav a:active {
+    color: inherit; /* 클릭해도 색상 변화 없음 */
+}
+
+.nav a:hover {
+    color: #ffdb58;
+}
+
+.nav-menu {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-top: 200px;
+}
+
+.nav-menu a {
+    text-decoration: none; /* 링크에 밑줄 제거 */
+    color: #e2e2e2; /* 링크 색상이 부모 요소의 색상에 따르도록 */    
+    justify-content: center;  /* 네비게이션 메뉴를 수평 중앙 정렬 */
+    font-size: 20px;
+    margin-top: 50%;
+}
+
+
+.nav-menu a:hover {
+    color: #ffdb58;
+}
+
+
+.header-area.expanded .nav-menu {
+    display: flex;
+}
+
+#menu-btn {
+    color: #ffffff; /* 기본 색상을 원하는 색으로 변경 */
+    text-decoration: none; /* 밑줄 제거 */
+    margin: 20px;
+}
+
+#menu-btn:hover, #close-btn:hover {
+    color: hsl(47, 100%, 50%);
+}
+
+.nav-menu {
+  display: none;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 80px;
+  gap: 80px;
+}
+
+.header-area.expanded .nav-menu {
+  display: flex;
+}
+
+.menu-left, .menu-right {
+  width: 45%;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.menu-left h2,
+.menu-right h2 {
+  margin-bottom: 10px;
+  font-size: 22px;
+  border-bottom: 2px solid #DEC35E;
+  display: inline-block;
+  padding-bottom: 20px;
+}
+
+.menu-left p {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #f2f2f2;
+}
+
+.menu-right form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.menu-right input,
+.menu-right textarea {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  padding: 8px 4px;
+  color: white;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.menu-right input:focus,
+.menu-right textarea:focus {
+  border-bottom: 1px solid #DEC35E;
+}
+
+.menu-right textarea {
+  resize: none;
+  height: 100px;
+}
+
+.menu-right button {
+  align-self: flex-start;
+  padding: 8px 16px;
+  background-color: transparent;
+  border: 1px solid #DEC35E;
+  color: #DEC35E;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.menu-right button:hover {
+  background-color: #DEC35E;
+  color: black;
+}
+
+.success-message {
+  margin-top: 8px;
+  color: #90ee90;
+  font-size: 13px;
+  display: none;
+}
+
+
+.close-btn {
+    display: none;
+    font-size: 15px;
+    color: black; /* X 표시를 검정색으로 변경 */
+    position: absolute;
+    top: 20px;
+    left: 20px; /* 왼쪽 상단으로 이동 */
+    cursor: pointer;
+}
+
+.header-area.expanded .close-btn {
+    display: block;
+}
+
+.header-area.expanded #menu-btn,
+.header-area.expanded .logo {
+    display: none;
+}
+
+    .scene {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: panRight 2.5s ease-out forwards;
+      animation-delay: 2s;
+    }
+
+    .timeline-wrapper {
+      position: relative;
+      width: 800px; /* 축소됨 */
+      height: 180px; /* 약간 줄임 */
+    }
+
+    /* 중심 원들 */
+    .inner-circle,
+    .inner-circle-2,
+    .inner-circle-3 {
+      position: absolute;
+      width: 14px;  /* 작게 */
+      height: 14px; /* 작게 */
+      background-color: #DEC35E;
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      animation: popIn 1s ease-out forwards;
+      cursor: pointer;
+      z-index: 3;
+    }
+
+    .inner-circle  { top: 50%; left: 50%; }
+    .inner-circle-2 { top: 50%; left: calc(50% + 250px); animation-delay: 1.8s; }
+    .inner-circle-3 { top: 50%; left: calc(50% + 500px); animation-delay: 2.4s; }
+
+    .outer-circle,
+    .outer-circle-2,
+    .outer-circle-3 {
+      position: absolute;
+      width: 35px; /* 작게 */
+      height: 35px; /* 작게 */
+      border: 1px solid #DEC35E;
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      animation: popInOuter 1.2s ease-out forwards;
+      z-index: 2;
+    }
+
+    .outer-circle  { top: 50%; left: 50%; }
+    .outer-circle-2 { top: 50%; left: calc(50% + 250px); animation-delay: 2s; }
+    .outer-circle-3 { top: 50%; left: calc(50% + 500px); animation-delay: 2.6s; }
+
+    /* 선 */
+    .line {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      height: 1px;
+      background-color: #DEC35E;
+      width: 0;
+      transform: translateY(-50%);
+      animation: growLine 1.5s ease-out forwards;
+      animation-delay: 1.4s;
+      z-index: 1;
+    }
+
+    /* 텍스트들 */
+    .year-text,
+    .year-text-2,
+    .year-text-3 {
+      position: absolute;
+      top: calc(50% + 45px);
+      font-size: 18px; /* 작게 */
+      font-weight: 700;
+      color: #DEC35E;
+      opacity: 0;
+      animation: fadeIn 0.6s ease-out forwards;
+    }
+
+    .year-text  { left: 50%; transform: translateX(-50%); animation-delay: 1.6s; }
+    .year-text-2 { left: calc(50% + 250px); transform: translateX(-50%); animation-delay: 2.2s; }
+    .year-text-3 { left: calc(50% + 500px); transform: translateX(-50%); animation-delay: 2.8s; }
+
+    .subtitle,
+    .subtitle-2,
+    .subtitle-3 {
+      position: absolute;
+      top: calc(50% + 80px);
+      font-size: 14px; /* 작게 */
+      font-weight: 400;
+      color: #DEC35E;
+      opacity: 0;
+      animation: fadeIn 0.6s ease-out forwards;
+      white-space: nowrap;
+    }
+
+    .subtitle  { left: 50%; transform: translateX(-50%); animation-delay: 2s; }
+    .subtitle-2 { left: calc(50% + 250px); transform: translateX(-50%); animation-delay: 2.6s; }
+    .subtitle-3 { left: calc(50% + 500px); transform: translateX(-50%); animation-delay: 3.2s; }
+
+    /* 애니메이션 키프레임 */
+    @keyframes popIn {
+      0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+      60% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+    @keyframes popInOuter {
+      0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+      60% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+      100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    @keyframes growLine {
+      0% { width: 0; }
+      100% { width: 500px; } /* 줄임 */
+    }
+    @keyframes panRight {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-220px); }
+    }
+
+    .outer-circle.active {
+      transform: translate(-50%, -50%) scale(1.5);
+      transition: transform 0.3s ease;
+      border-color: #DE5E5E;
+      z-index: 10;
+    }
+
+    .detail-box {
+      position: absolute;
+      top: calc(50% + 130px);
+      width: 220px;
+      padding: 10px;
+      background-color: #DE5E5E;
+      color: white;
+      font-size: 14px;
+      border-radius: 10px;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      white-space: normal;
+      line-height: 1.4;
+      z-index: 5;
+    }
+.highlight {
+  position: fixed;
+  top: 50vh;          /* 화면 세로 중간부터 */
+  left: 0;
+  width: 100vw;
+  height: 50vh;       /* 화면 하단 절반 전체 */
+  background-color: rgba(222, 94, 94, 0.2);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 0;
+}
+
+ /* 클릭 시 강조된 요소 외 나머지를 숨기기 위한 클래스 */
+  .hidden {
+    opacity: 0 !important;
+    pointer-events: none;
+  }
+
+  /* 선택된 원이 왼쪽 정렬되도록 이동시키기 위한 클래스 */
+  .move-left {
+    left: 80px !important;  /* 왼쪽 여백 */
+    transform: translateY(-50%) scale(1) !important;
+  }
+
+  .line-extend {
+    width: 100vw !important;
+    left: 80px !important;
+    transform: translateY(-50%);
+    transition: width 1s ease;
+  }
+
+  .timeline-wrapper {
+  position: relative;
+  width: 800px;
+  height: 180px;
+  transition: transform 0.6s ease; /* 추가 */
+}
+.detail-box {
+  position: absolute;
+  top: calc(50% + 130px);
+  width: 220px;
+  padding: 10px;
+  background-color: #DE5E5E;
+  font-size: 14px;
+  border-radius: 10px;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  white-space: normal;
+  line-height: 1.4;
+  z-index: 5;
+}
+.nav-menu {
+  display: none;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 60px;
+  gap: 40px;
+}
+
+.header-area.expanded .nav-menu {
+  display: flex;
+}
+
+.menu-left, .menu-right {
+  width: 45%;
+}
+
+.menu-left p, .menu-right form {
+  font-size: 14px;
+  color: #fff;
+}
+.nav-menu.fade-in {
+  opacity: 1;
+  transition: opacity 0.5s ease-in;
+}
+
+.nav-menu {
+  opacity: 0;
+  pointer-events: none; /* 클릭 방지 */
+}
+
+  </style>
+</head>
+<body>
+
+  
+    <header class="header-area">
+        <div class="nav-container">
+            <div class="nav-left">
+                <a href="#" id="menu-btn">미제사건전담수사팀</a>
+            </div>
+    
+    
+            <div class="close-btn" id="close-btn">닫기</div>
+        </div>
+    <div class="nav-menu">
+  <div class="menu-left">
+    <h2>사이트 소개</h2>
+    <p>
+      미제사건 전담 수사팀은 과거의 진실을 파헤치고 실종된 정의를 되찾는 것을 목표로 합니다.
+      시민 여러분의 제보는 하나의 작은 실마리이자, 큰 변화의 시작이 될 수 있습니다.
+    </p>
+  </div>
+
+  <div class="menu-right">
+    <h2>익명 제보</h2>
+    <form id="reportForm" onsubmit="submitReport(event)">
+      <input type="text" id="reportName" placeholder="이름 (선택)" />
+      <textarea id="reportContent" placeholder="내용을 입력해주세요..." required></textarea>
+      <button type="submit">제보하기</button>
+    </form>
+    <div id="reportSuccess" class="success-message">제보가 접수되었습니다!</div>
+  </div>
+</div>
+
+    </header>
+    
+  <div class="scene">
+    <div class="timeline-wrapper">
+      
+      <!-- 첫 번째 원 -->
+      <div class="outer-circle"></div>
+      <div class="inner-circle"></div>
+      <div class="year-text">2003</div>
+      <div class="subtitle">포천 여중생 살인사건</div>
+
+      <!-- 선 -->
+      <div class="line"></div>
+
+      <!-- 두 번째 원 -->
+      <div class="outer-circle-2"></div>
+      <div class="inner-circle-2"></div>
+      <div class="year-text-2">2004</div>
+      <div class="subtitle-2">광주 여대생 살인사건</div>
+
+      <!-- 세 번째 원 -->
+      <div class="outer-circle-3"></div>
+      <div class="inner-circle-3"></div>
+      <div class="year-text-3">2005</div>
+      <div class="subtitle-3">신정동 연쇄폭행 살인사건</div>
+      
+
+    </div>
+  </div>
+<script>
+
+const header = document.querySelector(".header-area");
+const menuBtn = document.querySelector("#menu-btn");
+const closeBtn = document.querySelector("#close-btn");
+let lastScrollY = window.scrollY;  // 이전 스크롤 위치 추적
+let isMenuOpen = false; // 메뉴가 열렸는지 여부
+let isAtTop = true; // 페이지 최상단에 도달했는지 여부
+
+// 메뉴 열기
+menuBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    header.classList.add("expanded"); // 메뉴가 열림
+    isMenuOpen = true;
+});
+
+// 메뉴 닫기
+closeBtn.addEventListener("click", () => {
+    header.classList.remove("expanded"); // 메뉴가 닫힘
+    isMenuOpen = false;
+});
+
+window.addEventListener("scroll", () => {
+    // 메뉴가 열려있는 상태에서는 스크롤에 의한 숨기기 동작을 하지 않음
+    if (isMenuOpen) return;
+
+    // 페이지가 최상단인지 확인
+    if (window.scrollY === 0) {
+        isAtTop = true; // 페이지 최상단
+    } else {
+        isAtTop = false; // 페이지가 최상단이 아님
+    }
+
+    // 페이지 최상단일 때만 네비게이션 바 보이게 처리
+    if (isAtTop) {
+        header.classList.remove("hidden");
+    } else {
+        header.classList.add("hidden");
+    }
+
+    lastScrollY = window.scrollY;  // 현재 스크롤 위치 업데이트
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const sets = [
+    {
+      inner: document.querySelector('.inner-circle'),
+      outer: document.querySelector('.outer-circle'),
+      year: document.querySelector('.year-text'),
+      subtitle: document.querySelector('.subtitle'),
+      offset: 0,
+      link: "page1.html"
+    },
+    {
+      inner: document.querySelector('.inner-circle-2'),
+      outer: document.querySelector('.outer-circle-2'),
+      year: document.querySelector('.year-text-2'),
+      subtitle: document.querySelector('.subtitle-2'),
+      offset: 250,
+      link: "page2.html"
+    },
+    {
+      inner: document.querySelector('.inner-circle-3'),
+      outer: document.querySelector('.outer-circle-3'),
+      year: document.querySelector('.year-text-3'),
+      subtitle: document.querySelector('.subtitle-3'),
+      offset: 500,
+      link: "page3.html"
+    }
+  ];
+  
+  sets.forEach(set => {
+    set.inner.addEventListener('click', () => {
+      // 클릭된 원 강조 (스타일 변경)
+      set.inner.style.backgroundColor = '#DE5E5E';
+      set.outer.style.borderColor = '#DE5E5E';
+      set.year.style.color = '#DE5E5E';
+      set.subtitle.style.color = '#DE5E5E';
+
+      // 딜레이 후 페이지 이동 (1초 후)
+      setTimeout(() => {
+        window.location.href = set.link;
+      }, 3000); // 1000ms = 1초
+    });
+      });
+
+  const highlight = document.getElementById('highlight');
+  const timelineWrapper = document.querySelector('.timeline-wrapper');
+  const detailBox = document.getElementById('detailBox');
+  let activeIndex = null;
+
+  sets.forEach((set, index) => {
+    set.inner.addEventListener('click', () => {
+
+      // 이미 활성화된 원을 다시 클릭하면 페이지 이동
+      if (activeIndex === index) {
+        window.location.href = set.link;
+        return;
+      }
+
+      // 강조 초기화
+      sets.forEach(s => {
+        s.inner.style.backgroundColor = '#DEC35E';
+        s.outer.style.borderColor = '#DEC35E';
+        s.year.style.color = '#DEC35E';
+        s.subtitle.style.color = '#DEC35E';
+      });
+
+      // 클릭된 원 강조
+      set.inner.style.backgroundColor = '#DE5E5E';
+      set.outer.style.borderColor = '#DE5E5E';
+      set.year.style.color = '#DE5E5E';
+      set.subtitle.style.color = '#DE5E5E';
+
+      // 중심 이동 및 확대
+      const centerScreenX = window.innerWidth / 2;
+      const timelineCenter = 800 / 2;
+      const targetX = timelineCenter + set.offset;
+      const moveX = targetX - centerScreenX;
+
+      timelineWrapper.style.transition = 'transform 0.6s ease';
+      timelineWrapper.style.transform = `scale(1.5) translateX(${-moveX / 1.5}px)`;
+
+      // 하이라이트
+      highlight.style.left = `calc(50% + ${set.offset}px)`;
+      highlight.style.width = '250px';
+
+      // 상세 설명 박스
+      detailBox.textContent = set.detail;
+      detailBox.style.left = `calc(50% + ${set.offset}px)`;
+      detailBox.style.opacity = '1';
+
+      activeIndex = index;
+    });
+  });
+});
+
+menuBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    header.classList.add("expanded"); // 메뉴 열기
+    isMenuOpen = true;
+
+    // 0.4초 뒤 텍스트 나타나게
+    setTimeout(() => {
+      document.querySelector(".nav-menu").classList.add("fade-in");
+    }, 400);
+});
+
+closeBtn.addEventListener("click", () => {
+    header.classList.remove("expanded");
+    document.querySelector(".nav-menu").classList.remove("fade-in");
+    isMenuOpen = false;
+});
+
+</script>
+<script>
+function submitReport(event) {
+  event.preventDefault();
+  const name = document.getElementById("reportName").value.trim() || "익명";
+  const content = document.getElementById("reportContent").value.trim();
+  const successBox = document.querySelector(".success-message");
+
+  if (!content) {
+    alert("제보 내용을 입력해주세요.");
+    return;
+  }
+
+  // reset
+  document.getElementById("reportName").value = "";
+  document.getElementById("reportContent").value = "";
+  successBox.style.display = "block";
+  setTimeout(() => successBox.style.display = "none", 3000);
+}
+
+</script>
+
+
+</body>
+</html>

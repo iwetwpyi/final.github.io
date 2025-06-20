@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>사건개요 - 증거 분석</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #1c1c1c;
+      margin: 0;
+      padding: 0;
+      color: #fff;
+    }
+
+    /* 슬라이더 컨테이너 스타일 */
+    .slider-container {
+      width: 500px;       /* 슬라이더 너비 500px로 설정 */
+      height: 400px;      /* 슬라이더 높이 */
+      overflow: hidden;   /* 넘치는 이미지 숨기기 */
+      margin: 100px auto;
+      margin-bottom: 0px;
+      border-radius: 10px;
+      position: relative;
+    }
+
+    /* 슬라이더 스타일 */
+    .slider {
+      display: flex;
+      align-items: flex-end; /* 이미지들을 하단에 정렬 */
+      transition: transform 0.5s ease-in-out;
+    }
+.slider img {
+  width: 100%;
+  height: 100%;       /* 여기를 height: auto → 100% 로 변경 */
+  object-fit: cover;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  border-radius: 10px;
+}
+
+    /* 좌우 화살표 버튼 스타일 (슬라이더 외부에 배치) */
+    .arrow-left, .arrow-right {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 36px;  /* 화살표 크기 */
+      color: #ffffff;   /* 화살표 색상 */
+      border: none;
+      background: none; /* 배경 없애기 */
+      cursor: pointer;
+      z-index: 1;   /* 이미지보다 뒤에 위치하게 설정 */
+    }
+
+    /* 왼쪽 화살표 위치 조정 */
+    .arrow-left {
+      left: 5px;   /* 슬라이더 왼쪽 외부 */
+    }
+
+    /* 오른쪽 화살표 위치 조정 */
+    .arrow-right {
+      right: 5px;  /* 슬라이더 오른쪽 외부 */
+    }
+
+    /* 화살표 호버 효과 */
+    .arrow-left:hover, .arrow-right:hover {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <section id="evidence-analysis">
+    <div class="slider-container">
+      <div class="slider" id="slider">
+        <img src="img/evi1.png" alt="Evidence 1">
+        <img src="img/evi2.png" alt="Evidence 2">
+        <img src="img/evi3.png" alt="Evidence 3">
+        <img src="img/evi4.png" alt="Evidence 4">
+        <img src="img/evi5.png" alt="Evidence 5">
+      </div>
+    </div>
+
+    <!-- 좌우 화살표 버튼 -->
+    <button class="arrow-left" id="prev">❮</button>
+    <button class="arrow-right" id="next">❯</button>
+  </section>
+
+  <script>
+    let currentIndex = 0; // 현재 이미지 인덱스
+    const slider = document.getElementById('slider');
+    const totalSlides = document.querySelectorAll('.slider img').length;
+
+    // 슬라이드 이동 함수
+    function moveSlide() {
+      const slideWidth = document.querySelector('.slider-container').offsetWidth; // 동적으로 슬라이드 너비 계산
+      slider.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+    }
+
+    // 왼쪽 화살표 클릭
+    document.getElementById('prev').addEventListener('click', () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        moveSlide();
+      }
+    });
+
+    // 오른쪽 화살표 클릭
+    document.getElementById('next').addEventListener('click', () => {
+      if (currentIndex < totalSlides - 1) {
+        currentIndex++;
+        moveSlide();
+      }
+    });
+
+    // 이미지 크기 자동 조정
+    window.addEventListener('resize', resizeImages);
+
+    function resizeImages() {
+      const sliderImages = document.querySelectorAll('.slider img');
+      const sliderContainer = document.querySelector('.slider-container');
+      const containerWidth = sliderContainer.offsetWidth;
+      
+      sliderImages.forEach(image => {
+        image.style.width = `${containerWidth}px`;
+        image.style.height = 'auto'; // 비율을 유지
+      });
+    }
+
+    // 처음 페이지 로드 시 이미지 크기 조정
+    resizeImages();
+  </script>
+
+</body>
+</html>

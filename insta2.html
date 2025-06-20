@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>NCT WISH Instagram Feed</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fafafa;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      
+    }
+
+    .container {
+      max-width: 960px;
+      width: 90%;
+      margin: 0 auto;
+      padding: 0;
+      box-sizing: border-box;
+      
+      
+    }
+
+    .profile-section {
+      display: flex;
+      align-items: center;
+      padding: 10px 0;
+    }
+
+.profile-section img {
+  width: 200px;
+  height: 200px;
+  border: 1px solid #dbdbdb;
+  margin-right: 5vw;
+  border-radius: 50%;  /* 원형으로 */
+  background-color: #00376b
+}
+    .profile-info {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(8px, 1.5vw, 16px);
+    }
+
+    .username {
+      font-size: clamp(16px, 2vw, 20px);
+    }
+
+    .bio {
+      font-size: clamp(12px, 1.5vw, 14px);
+    }
+
+    .bio a {
+      color: #00376b;
+      text-decoration: none;
+    }
+
+    .profile-menu {
+      font-size: clamp(12px, 1.5vw, 14px);
+      gap: 5vw;
+    }
+
+    .profile-menu span {
+      cursor: pointer;
+    }
+
+    .profile-menu span:hover {
+      text-decoration: underline;
+    }
+
+    .section-title {
+      border-top: 1px solid #dbdbdb;
+      padding: 20px 0 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #000;
+    }
+
+    .section-title img {
+      width: clamp(14px, 2vw, 24px);
+      height: auto;
+      object-fit: contain;
+    }
+
+    .feed {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      padding-bottom: 40px;
+    }
+
+    .feed img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      background-color: #dbdbdb;
+      cursor: pointer;
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: white;
+      z-index: 9999;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      overflow: hidden;
+    }
+
+
+.modal-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0,0,0,0.5);
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 3px 8px;
+  user-select: none;
+  border-radius: 3px;
+  transition: background-color 0.3s;
+  z-index: 5;
+  display: none; /* 기본은 숨김 */
+}
+
+.modal-nav.prev {
+  left: 0;   /* 왼쪽 끝으로 붙임 */
+}
+
+.modal-nav.next {
+  right: 0;  /* 오른쪽 끝으로 붙임 */
+}
+
+.modal-nav:hover {
+  background-color: rgba(0,0,0,0.8);
+}
+
+.modal-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+  .modal img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.modal-content.single-view {
+  width: 90vw;
+  height: 90vh;
+  background-color: #000;
+  border-radius: 5px;
+  box-shadow: 0 0 15px #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-left.full {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modal-image-container {
+  position: relative;  /* 추가: 버튼 위치 기준 */
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-image-container img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+    .modal .info-area {
+      padding: 20px;
+      text-align: center;
+    }
+
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .controls button {
+      background: none;
+      color: #000;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 16px;
+      border: 1px solid #000;
+    }
+
+    .controls button:hover {
+      background: #000;
+      color: #fff;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 28px;
+      cursor: pointer;
+      color: #000;
+    }
+
+    /* 모달 기본 설정 */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background-color: rgba(0,0,0,0.85);
+  z-index: 9999;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* 닫기 버튼 */
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 30px;
+  cursor: pointer;
+  color: #fff;
+  z-index: 10;
+}
+.modal-content {
+  display: flex;
+  background-color: #111;
+  border-radius: 5px;
+  width: 90vw;
+  max-height: 80vh;
+  overflow: hidden;
+  box-shadow: 0 0 15px #000;
+  height: 80vh; /* 추가 - 높이 명확히 지정 */
+}
+.modal-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #000;
+  overflow: hidden;
+  height: 100%;
+}
+.modal-left img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+
+/* 오른쪽: 댓글 영역 */
+.modal-right {
+  flex: 1;
+  background-color: #1e1e1e;
+  padding: 15px 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+    position: relative;
+  padding-bottom: 60px; /* 댓글 입력창 높이만큼 공간 확보 */
+}
+
+.comments-header {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 6px;
+  color: #fff;
+}
+
+.comments-list {
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+}
+
+.comments-list::-webkit-scrollbar {
+  display: none; /* Chrome, Safari 등 */
+}
+
+
+.comments-list::-webkit-scrollbar {
+  width: 6px;
+  
+}
+
+.comments-list::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 3px;
+}
+
+.comment-item {
+  margin-bottom: 12px;
+  font-size: 10px;
+  color: #ccc;
+}
+
+.comment-item strong {
+  color: #fff;
+  margin-right: 6px;
+}
+
+/* 하단 컨트롤(이전/다음 버튼) */
+.modal-controls {
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.modal-controls button {
+  background: none;
+  border: 1px solid #fff;
+  color: #fff;
+  padding: 6px 14px;
+  cursor: pointer;
+  border-radius: 0px;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.modal-controls button:hover {
+  background: #fff;
+  color: #000;
+}
+
+.comment-form {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px 25px;
+  background-color: #1e1e1e;
+  border-top: 1px solid #333;
+}
+.comment-form input,
+.comment-form button {
+  height: 36px;
+  font-size: 14px;
+}
+
+.comment-form input {
+  flex: 1;
+  padding: 0 20px;
+  border-radius: 4px;
+  border: none;
+  background-color: #333;
+    color: white; /* ✅ 텍스트 색상 흰색으로 */
+}
+
+.comment-form button {
+  padding: 0 16px;
+  background-color: #00376b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+
+
+
+
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="container">
+      <div class="profile-section">
+        <div class="profile-info">
+          <div class="username"><b>@mashimaro_unofficial</b></div>
+    
+          <div class="bio">
+            <strong>신정동 엽기토끼</strong> 장기미제사건<br />
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">
+       
+      </div>
+
+      <div class="feed" id="feed">
+        <img src="img/insta2_1.png" alt="Post 1" data-index="0" />
+        <img src="img/insta2_2.png" alt="Post 2" data-index="1" />
+        <img src="img/insta2_3.png" alt="Post 3" data-index="2" />
+        <img src="img/insta2_4.png" alt="Post 4" data-index="3" />
+        <img src="img/insta2_5.png" alt="Post 5" data-index="4" />
+        <img src="img/insta2_6.png" alt="Post 6" data-index="5" />
+      </div>
+    </div>
+  </div>
+<!-- Modal Viewer -->
+<div class="modal" id="imageModal">
+  <span class="close-btn" onclick="closeModal()">&times;</span>
+  <div class="modal-content">
+    <div class="modal-left">
+      <!-- ✅ 이미지 감싸는 박스 추가 -->
+      <div class="modal-image-container">
+        <img id="modalImage" src="" alt="확대 이미지" />
+         <!-- 이전 버튼 -->
+      <button class="modal-nav prev" onclick="prevImage()">&#10094;</button>
+      <!-- 다음 버튼 -->
+      <button class="modal-nav next" onclick="nextImage()">&#10095;</button>
+      </div>
+  
+    </div>
+    <div class="modal-right">
+      <div class="comments-header">댓글</div>
+      <div class="comments-list" id="commentsList"></div>
+      <form class="comment-form" onsubmit="submitComment(event)">
+        <input type="text" id="commentInput" placeholder="댓글을 입력하세요..." required />
+        <button type="submit">등록</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+<script>
+  function openModal(index) {
+  currentIndex = index;
+  const modal = document.getElementById("imageModal");
+  const modalImg = document.getElementById("modalImage");
+  const commentsList = document.getElementById("commentsList");
+
+  modal.style.display = "flex";
+  modalImg.src = images[index].src;
+  
+  renderComments();
+}
+
+  const images = [
+    ["img/insta2_1.png"],                           // 0번 게시글
+    ["img/insta2_2.png", "img/insta2_2_1.png"],    // 1번 게시글 (이미지 2장)
+    ["img/insta2_3.png"],                           // 2번 게시글
+    ["img/insta2_4.png"],
+    ["img/insta2_5.png"],
+    ["img/insta2_6.png"]
+  ];
+
+  // 댓글 데이터는 그대로 게시글별 배열 유지
+  const commentsData = [
+    [ 
+      { user: "admin", text: "현장 사진: 피해자 시신 최초 발견 위치" },
+      { user: "admin", text: "포대자루에 담겨 유기된 시신. 유의미한 증거는 수집하지 못했다." }
+    ],
+    [    
+      { user: "admin", text: "추정된 용의자: 특이사항 / 범행 이력 있음" },
+      { user: "admin", text: "피해자 증언을 바탕으로 특정한 용의자 중 둘. 하지만 뚜렷한 인과관계는 밝혀내지 못함." }
+    ],
+    [    
+      { user: "admin", text: "범행 도구로 추정되는 물체 (감식 진행 중)" },
+      { user: "admin", text: "노끈을 사용한 범인. 범행 장소에서도 다량 발견." }
+    ],
+    [    
+      { user: "admin", text: "용의자 증언 당시: 2층에 위치한 낡은 신발장 하나" },
+      { user: "admin", text: "범행 장소. 2층에 위치했던 신발장. 피해자는 신발장 뒤에 숨어있다 탈출." }
+    ],
+    [    
+      { user: "admin", text: "용의자 거주지 구조도 (비공식 입수 자료)" },
+      { user: "admin", text: "범행 장소이자 범인의 거주지로 추정." }
+    ],
+    [    
+      { user: "admin", text: "신발장 외부: 엽기토끼 스티커 부착 흔적 발견" },
+      { user: "admin", text: "신발장에 붙어있던 엽기토끼 스티커." }
+    ]
+  ];
+
+  // 현재 게시글 인덱스와 이미지 인덱스 분리
+  let currentPostIndex = 0;
+  let currentImageIndex = 0;
+
+  // 피드 이미지 클릭시 모달 열기
+  document.querySelectorAll(".feed img").forEach((img, index) => {
+    img.addEventListener("click", () => openModal(index));
+  });
+function openModal(postIndex) {
+  currentPostIndex = postIndex;
+  currentImageIndex = 0; // 항상 첫 이미지부터 시작
+  const modal = document.getElementById("imageModal");
+  const modalImg = document.getElementById("modalImage");
+
+  modal.style.display = "flex";
+  modalImg.src = images[currentPostIndex][currentImageIndex];
+
+  // 화살표 버튼 제어
+  const prevBtn = modal.querySelector(".modal-nav.prev");
+  const nextBtn = modal.querySelector(".modal-nav.next");
+  
+  if (images[currentPostIndex].length > 1) {
+    prevBtn.style.display = "block";
+    nextBtn.style.display = "block";
+  } else {
+    prevBtn.style.display = "none";
+    nextBtn.style.display = "none";
+  }
+
+  renderComments();
+}
+
+
+  // 모달 닫기
+  function closeModal() {
+    document.getElementById("imageModal").style.display = "none";
+  }
+
+  // 이전 이미지 보기 (같은 게시글 내)
+  function prevImage() {
+    const imgs = images[currentPostIndex];
+    currentImageIndex = (currentImageIndex - 1 + imgs.length) % imgs.length;
+    document.getElementById("modalImage").src = imgs[currentImageIndex];
+  }
+
+  // 다음 이미지 보기 (같은 게시글 내)
+  function nextImage() {
+    const imgs = images[currentPostIndex];
+    currentImageIndex = (currentImageIndex + 1) % imgs.length;
+    document.getElementById("modalImage").src = imgs[currentImageIndex];
+  }
+
+  // 댓글 렌더링
+  function renderComments() {
+    const commentsList = document.getElementById("commentsList");
+    commentsList.innerHTML = "";
+    const comments = commentsData[currentPostIndex] || [];
+    comments.forEach(({ user, text }) => {
+      const div = document.createElement("div");
+      div.className = "comment-item";
+      div.innerHTML = `<strong>${user}</strong> ${text}`;
+      commentsList.appendChild(div);
+    });
+  }
+
+  // 댓글 등록
+  function submitComment(e) {
+    e.preventDefault();
+    const input = document.getElementById("commentInput");
+    const newText = input.value.trim();
+    if (newText === "") return;
+    commentsData[currentPostIndex].push({ user: "user", text: newText });
+    input.value = "";
+    renderComments();
+  }
+</script>
+
+</body>
+</html>
