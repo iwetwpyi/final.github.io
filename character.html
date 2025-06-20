@@ -1,0 +1,173 @@
+<!-- 기존 HTML 상단 생략 -->
+<style>
+
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #004080;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;    
+    }
+
+  /* === 탐정 캐릭터 스타일 === */
+  .guide-bot {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    width: 80px;
+    height: auto;
+    z-index: 1000;
+    animation: float 2s ease-in-out infinite;
+    transition: top 1s, right 1s;
+    
+    cursor: pointer;
+  }
+
+  .chat-bubble {
+    position: fixed;
+    top: 60px;
+    right: 110px;
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #000;
+    border-radius: 5px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-family: 'Tahoma', sans-serif;
+    max-width: 250px;
+    z-index: 1001;
+    box-shadow: 2px 2px 0 #333;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+
+  
+  .win98-button.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+</style>
+
+<body>
+<!-- 기존 HTML 생략 -->
+
+<!-- 🕵️ 탐정 안내봇 추가 -->
+<img src="img/character3.png" alt="탐정봇" class="guide-bot" id="guideBot">
+<div class="chat-bubble" id="chatBubble">안녕! 만나서 반가워. 내 이름은 <b>'미래'</b>.<br>지금부터 페이지 탐색을 도와줄거야!</div>
+
+<!-- 기존 스크립트 아래에 추가 -->
+<script>
+  const guideBot = document.getElementById('guideBot');
+  const chatBubble = document.getElementById('chatBubble');
+const messages = [
+  "안녕! 만나서 반가워. 내 이름은 <b>'미래'</b>.<br>지금부터 페이지 탐색을 도와줄거야!",
+  "이 웹페이지는 아직 해결되지 않은<br> <b>'미제사건'</b>을 세 가지 다루고 있어.",
+  "1. 포천여중생 살인사건<br> 2. 신정동동 연쇄살인사건<br> 3. 광주 여대생 살인사건",
+  "이 세 사건은 범행 과정에서<br>눈에 띄는 특이점을 가지거든.",
+  "자. 설명은 이정도로 하고, 자세한 건<br> 같이 페이지를 살펴보며 알려줄게.",
+  "우선 페이지 왼쪽 아래에 <b>'사용법' <br> 버튼</b>이 있지? 한 번 클릭해보자."
+];
+let msgIndex = 0;
+chatBubble.innerHTML = messages[msgIndex];
+
+guideBot.addEventListener('click', () => {
+  if (msgIndex < messages.length - 1) {
+    msgIndex++;
+    chatBubble.innerHTML = messages[msgIndex];
+  }
+});
+
+</script>
+<script>
+  function closeWarningWindow() {
+    const warning = document.getElementById('warning');
+    const overlay = document.getElementById('blockOverlay');
+    warning.classList.remove('open');
+    warning.style.display = 'none';
+    if (overlay) {
+      overlay.style.display = 'none';
+    }
+  }
+
+  function openWarningWindow() {
+    const win = document.getElementById('warning');
+    const overlay = document.getElementById('blockOverlay');
+    win.classList.add('open');
+    win.style.left = (window.innerWidth - win.offsetWidth) / 2 + 'px';
+    win.style.top = (window.innerHeight - win.offsetHeight) / 2 + 'px';
+    win.style.display = 'block';
+    if (overlay) {
+      overlay.style.display = 'block';
+    }
+  }
+
+  function updateTime() {
+    const now = new Date();
+    let h = now.getHours(), ap = h < 12 ? '오전' : '오후';
+    h = h % 12 || 12;
+    const m = now.getMinutes().toString().padStart(2, '0');
+    const Y = now.getFullYear();
+    const Mo = (now.getMonth() + 1).toString().padStart(2, '0');
+    const D = now.getDate().toString().padStart(2, '0');
+    document.getElementById('timeDisplay').innerHTML = `${ap} ${h}:${m}\n${Y}-${Mo}-${D}`;
+  }
+
+  window.onload = function () {
+    openWarningWindow();
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    const boxes = document.querySelectorAll('.image-box');
+    boxes.forEach(box => {
+      const img = box.querySelector('img');
+      const defaultSrc = box.getAttribute('data-default');
+      const hoverSrc = box.getAttribute('data-hover');
+
+      box.addEventListener('mouseenter', () => {
+        img.src = hoverSrc;
+      });
+
+      box.addEventListener('mouseleave', () => {
+        img.src = defaultSrc;
+      });
+
+      box.addEventListener('click', () => {
+        document.body.classList.add('fade-out');
+        const link = box.getAttribute('data-link');
+        setTimeout(() => {
+          window.location.href = link;
+        }, 500);
+      });
+    });
+  };
+
+function toggleStartMenu() {
+  const helpWindow = document.getElementById('helpWindow');
+  helpWindow.classList.toggle('open');
+  helpWindow.style.left = (window.innerWidth - helpWindow.offsetWidth) / 2 + 'px';
+  helpWindow.style.top = (window.innerHeight - helpWindow.offsetHeight) / 2 + 'px';
+
+  // 안내 메시지가 마지막 텍스트였을 경우, 다음 메시지 출력
+  if (msgIndex === messages.length - 1) {
+    chatBubble.innerHTML = "좋아. 조작법을 익혔으면, 이제 가장 왼쪽의 <br> <b>포천여중생살인사건</b> 파일을 클릭해보자.";
+  }
+}
+
+
+function closeHelpWindow() {
+  const helpWindow = document.getElementById('helpWindow');
+  helpWindow.classList.remove('open');
+}
+</script>
+
+
+<div id="blockOverlay"></div>
+
+</body>
+</script>

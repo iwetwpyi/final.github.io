@@ -1,0 +1,1683 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>광주 여대생 살인사건</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #004080;
+      font-family: 'Courier New', monospace;
+      height: 100vh;
+      user-select: none;
+      overflow: hidden;
+      font-family: 'Digital-7', sans-serif;
+    }
+    
+    .icon-container {
+      position: absolute;
+      top: 30px;
+      left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+      z-index: 1;
+    }
+
+    .icon {
+      width: 80px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .icon img,
+    .icon svg {
+      width: 40px;
+      height: 40px;
+      image-rendering: pixelated;
+    }
+
+    .icon p {
+      margin: 4px 0 0;
+      font-size: 13px;
+      color: #fff;
+    }
+
+    .taskbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50px;
+      background-color: #c0c0c0;
+      border-top: 2px solid #fff;
+      border-bottom: 2px solid #808080;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0 10px;
+      box-sizing: border-box;
+      z-index: 100;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .taskbar-icons {
+      display: flex;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .taskbar-icon {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+
+    .taskbar-icon img,
+    .taskbar-icon svg {
+      width: 100%;
+      height: 100%;
+    }
+    
+
+    .time-display {
+      margin-left: auto;
+      color: #000;
+      font-size: 12px;
+      text-align: right;
+      white-space: pre;
+    }
+
+    .window {
+      display: none;
+      position: absolute;
+      width: 600px;
+      height: 500px;
+      background-color: #fff;
+      border: 2px solid #000;
+      z-index:1;
+      font-size: 14px;
+      flex-direction: column;
+    }
+
+    .window.open {
+      display: flex;
+    }
+
+    .window-header {
+      background-color: navy;
+      color: #fff;
+      padding: 6px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+      cursor: move;
+    }
+
+    .window-header button {
+      background-color: #c0c0c0;
+      border: 1px solid #000;
+      padding: 0 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .window-body {
+      padding: 10px;
+      background-color: #ffffff;
+      flex: 1;
+      overflow: auto;
+    }
+
+
+    .explorer-toolbar {
+      display: flex;
+      gap: 4px;
+      padding: 4px;
+      background-color: #e0e0e0;
+      border-bottom: 1px solid #808080;
+    }
+
+    .explorer-toolbar button {
+      font-family: inherit;
+      font-size: 13px;
+      border: 1px solid #000;
+      background-color: #c0c0c0;
+      padding: 2px 6px;
+    }
+
+    .explorer-address {
+      flex: 1;
+      font-family: inherit;
+      font-size: 13px;
+      padding: 2px 6px;
+      border: 1px solid #000;
+    }
+    .explorer-main {
+  display: flex;
+  height: 100%;
+}
+
+.explorer-content {
+  padding: 0px;
+  background-color: white;
+  display: flex;  /* Flexbox로 변경하여 가로로 항목들이 배치되도록 설정 */
+  flex-direction: column; /* 세로로 배치하되, 항목들은 개별적으로 줄을 나누기 */
+  gap: 5px; /* 항목 간의 간격 설정 */
+  width: 100%;  /* 전체 너비 차지하도록 설정 */
+}
+/* 레이아웃 내부 요소들도 넘치지 않게 */
+.explorer-main,
+.explorer-content,
+.file-item {
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  transition: background-color 0.3s;
+  cursor: pointer;
+  width: 100%; /* 부모 컨테이너의 전체 너비를 차지하도록 설정 */
+}
+
+.file-item:hover {
+  background-color: #d7d7d7;
+}
+
+.file-item img {
+  width: auto;  /* 아이콘 크기 */
+  height: auto;
+  margin-right: 10px;  /* 아이콘과 파일명 사이에 여백 추가 */
+}
+
+.file-item .file-name {
+  flex: 1;  /* 파일명은 남은 공간을 차지하도록 설정 */
+  font-size: 14px;
+  color: #333;
+}
+
+.file-item .file-date {
+  font-size: 12px;
+  color: #777;
+  text-align: right; /* 날짜를 오른쪽으로 정렬 */
+  white-space: nowrap; /* 날짜가 줄 바꿈되지 않도록 설정 */
+}
+
+    
+    
+    #start {
+  position: fixed;
+  bottom: 50px;
+  left: 0;
+  width: 260px;
+  height: 350px;
+  display: none;
+  background-color: #e0e0e0;
+  border: 2px solid #000;
+  flex-direction: row;
+  z-index: 150;
+  font-size: 13px;
+  box-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+#start.open {
+  display: flex;
+}
+
+
+/* 오른쪽 메뉴 영역 */
+#start .start-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+.start-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+.start-item:hover {
+  background-color: #d0d0d0;
+}
+
+.start-item img {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+
+#passwordPrompt {
+  display: none;
+  position: absolute;
+  width: 270px;
+  height: auto;
+  background-color: #fff;
+  border: 2px solid #000;
+  box-sizing: border-box; /* <-- 이 줄 추가 */
+  z-index: 300;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 10px;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+#passwordPrompt.open {
+  display: flex;
+}
+
+#passwordPrompt input {
+  padding: 0px;
+  font-size: 14px;
+  width: 100%;
+  border: 1px solid #ccc;
+}
+#passwordPrompt * {
+  max-width: 100%;
+  box-sizing: border-box;
+  word-wrap: break-word;
+}
+
+#passwordPrompt button {
+  background-color: #ccc;
+  color: #000;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+#passwordPrompt button:hover {
+  background-color: #a5a5a5;
+}
+
+.password-display {
+  width: 100%;
+  height: 40px;
+  border: 1px solid #888;
+  margin-bottom: 20px;
+  font-size: 25px;
+  text-align: center;
+  background: white;
+  overflow-x: hidden; /* 비밀번호 화면에서 가로 스크롤 방지 */
+}
+
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+  overflow-x: hidden; /* 키패드에서 가로 스크롤 방지 */
+}
+
+.keypad button {
+  padding: 10px;
+  font-size: 20px;
+  background-color: #c0c0c0;
+  border: none;
+  cursor: pointer;
+  color: #333; /* 버튼 글자색 */
+}
+
+.keypad button:hover {
+  background-color: #bbb; /* 버튼 hover시 색상 변경 */
+}
+.palette {
+      display: flex;
+      flex-wrap: wrap;
+      width: 200px;
+      display: grid;
+  grid-template-columns: repeat(2, 30px); /* 2열로 구성 */
+  gap: 5px;
+    }
+    .color {
+      width: 30px;
+      height: 30px;
+      border: 1px solid black;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .drawing-area {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px; /* 캔버스와 팔레트 사이의 간격 */
+  margin-top: 10px;
+}
+
+
+.controls {
+      display: flex;
+      margin-top: 10px;
+    }
+
+    button {
+  font-family: 'Microsoft Sans Serif', sans-serif;
+  font-size: 12px;
+  padding: 4px 20px;
+  border: 0.5px solid;
+  border-color: #fff #000 #000 #fff;
+  background-color: #c0c0c0;
+  box-shadow: inset -1px -1px #808080, inset 1px 1px #ffffff;
+  cursor: pointer;
+  outline: none;
+}
+
+button:active {
+  border-color: #000 #fff #fff #000;
+  box-shadow: inset 1px 1px #808080, inset -1px -1px #ffffff;
+}
+
+
+
+  .view {
+    display: none;
+  }
+
+  .view.active {
+    display: block;
+  }
+
+ /* 윈도우 98 경고창 스타일 */
+  #warning {
+    width: 400px;
+    background-color: #c0c0c0;
+    border: 2px solid #000;
+    box-shadow: 3px 3px 0 #000;
+    font-family: 'Tahoma', 'MS Sans Serif', sans-serif;
+    position: absolute;
+    top: 100px;
+    left: 100px;
+    z-index: 9999;
+  }
+
+  #warning .window-header {
+    background-color: #000080;
+    color: white;
+    padding: 4px 10px;
+    font-weight: bold;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 25px;
+  }
+
+  #warning .window-header button {
+    background-color: #c0c0c0;
+    border: 2px outset #fff;
+    width: 22px;
+    height: 22px;
+    font-weight: bold;
+    color: #000;
+    cursor: pointer;
+  }
+
+  #warning .window-body {
+    padding: 20px;
+    background-color: #ffffff;
+    border-top: 2px solid #808080;
+    font-size: 15px;
+    color: #000;
+    line-height: 1.5;
+  }
+
+  #warning .window-body p {
+    margin-bottom: 20px;
+  }
+
+  #warning .button-row {
+    text-align: right;
+  }
+
+  #warning .button-row button {
+    font-family: 'Tahoma', sans-serif;
+    font-size: 12px;
+    padding: 3px 12px;
+    border: 2px outset #fff;
+    background-color: #c0c0c0;
+    cursor: pointer;
+    margin-left: 5px;
+  }
+  
+  #paintWindow {
+  position: fixed;       /* 화면 기준 위치 고정 */
+  top: 50%;              /* 화면 세로 중앙 */
+  left: 50%;             /* 화면 가로 중앙 */
+  transform: translate(-50%, -50%);  /* 자신의 크기 절반만큼 위/왼쪽으로 이동해서 정확히 중앙에 */
+  z-index: 9999;         /* 다른 요소 위에 나오도록 */
+}
+#mailWindow {
+  position: fixed;       /* 화면 고정 위치 */
+  top: 50%;             /* 세로 중앙 */
+  left: 50%;            /* 가로 중앙 */
+  transform: translate(-50%, -50%); /* 정확히 중앙 정렬 */
+  z-index: 1000;        /* 다른 요소 위에 보이도록 */
+}
+  .mail-category {
+    cursor: pointer;
+    margin: 6px 0;
+  }
+  .mail-category.active {
+    font-weight: bold;
+    color: #DE5E5E;
+  }
+  .mail-item {
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+  }
+  .mail-item:hover {
+    background-color: #f0f0f0;
+  }
+
+  .guide-bot {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    width: 80px;
+    height: auto;
+    z-index: 1000;
+    
+    cursor: pointer;
+  }
+
+  .chat-bubble {
+    position: fixed;
+    top: 60px;
+    right: 110px;
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #000;
+    border-radius: 5px;
+    padding: 10px 14px;
+    font-size: 12px;
+    font-family: 'Tahoma', sans-serif;
+    max-width: 250px;
+    z-index: 1001;
+    box-shadow: 2px 2px 0 #333;
+  }
+
+  </style>
+</head>
+<body>
+
+
+
+<div class="icon-container">
+  <div class="icon" onclick="openWindow('trash')"
+       onmouseover="this.querySelector('img').src='https://win98icons.alexmeub.com/icons/png/recycle_bin_full-2.png'"
+       onmouseout="this.querySelector('img').src='https://win98icons.alexmeub.com/icons/png/recycle_bin_empty-5.png'">
+    <img src="https://win98icons.alexmeub.com/icons/png/recycle_bin_empty-5.png" alt="휴지통" />
+    <p>휴지통</p>
+  </div>
+
+  <div class="icon" onclick="openPasswordPrompt()"
+       onmouseover="this.querySelector('img').src='https://win98icons.alexmeub.com/icons/png/camera3_plus-4.png'"
+       onmouseout="this.querySelector('img').src='https://win98icons.alexmeub.com/icons/png/camera3-4.png'">
+    <img src="https://win98icons.alexmeub.com/icons/png/camera3-4.png" alt="IE" />
+    <p>레코드</p>
+  </div>
+
+  <div class="icon" onclick="openWindow('caseFolder')"
+       onmouseover="this.querySelector('img').src='https://win98icons.alexmeub.com/icons/png/directory_open_file_mydocs-5.png'"
+       onmouseout="this.querySelector('img').src='https://win98icons.alexmeub.com/icons/png/directory_closed_cool-3.png'">
+    <img src="https://win98icons.alexmeub.com/icons/png/directory_closed_cool-3.png" alt="사건파일" />
+    <p>사건파일</p>
+  </div>
+
+  <div class="icon" onclick="openWindow('chatApp')"
+       onmouseover="this.querySelector('img').src='https://win98icons.alexmeub.com/icons/png/envelope_open_sheet-0.png'"
+       onmouseout="this.querySelector('img').src='https://win98icons.alexmeub.com/icons/png/envelope_closed-0.png'">
+    <img src="https://win98icons.alexmeub.com/icons/png/envelope_closed-0.png" alt="인트라넷" />
+    <p>인트라넷</p>
+  </div>
+</div>
+
+<!-- 작업 표시줄 -->
+<div class="taskbar">
+  <div class="start-menu-btn" onclick="toggleStartMenu()">
+    <img src="https://win98icons.alexmeub.com/icons/png/windows_slanted-1.png" alt="시작" />
+  </div>
+  <div class="taskbar-icons" id="taskbarIcons"></div>
+  
+  <div class="time-display" id="timeDisplay"></div>
+</div>
+
+
+  <div class="window" id="start">
+    <div class="start-content">
+
+<div class="start-item" onclick="openCalendar()">
+  <img src="https://win98icons.alexmeub.com/icons/png/calendar-5.png" />
+  <span>캘린더</span>
+</div>
+
+
+
+      <div class="start-item" onclick="openNote()">
+        <img src="https://win98icons.alexmeub.com/icons/png/notepad-0.png" />
+        <span>메모장</span>
+      </div>
+      
+      <div class="start-item" onclick="openPaint()">
+        <img src="https://win98icons.alexmeub.com/icons/png/help_book_cool-4.png" />
+        <span>마법사</span>
+      </div>
+
+
+    </div>
+  </div>
+  
+
+
+
+<!-- 창들 -->
+<div class="window" id="trash">
+  <div class="window-header">
+    <span>휴지통</span>
+    <button onclick="closeWindow('trash')">×</button>
+  </div>
+  <div class="window-body">
+    <div class="explorer-toolbar">
+      <button>&larr;</button><button>&rarr;</button><button>⟳</button>
+      <input class="explorer-address" value="홈 > 휴지통" />
+    </div>
+
+    <div class="explorer-main">
+      <div class="explorer-content">
+ 
+        <div class="file-item" onclick="openFileInPopup('폐기_사건종결.pdf', 'similer.html', 'trash')">
+          <img src="https://win98icons.alexmeub.com/icons/png/file_lines-0.png" alt="Image Icon">
+          <span class="file-name">부산 청테이프 사건과의 유사성 파악.docx</span>
+          <span class="file-date">2025-09-14</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- 내부 팝업 처리 -->
+<script>
+function openFileInPopup(title, url, parentId) {
+  const popupId = `popup_${Date.now()}`;
+  const popupWidth = 600;
+  const popupHeight = window.innerHeight * 0.75;
+  const left = (window.innerWidth - popupWidth) / 2;
+  const top = (window.innerHeight - popupHeight) / 2;
+
+  const popupHTML = `
+    <div class="popup-window" id="${popupId}" style="
+      position:fixed;
+      top:${top}px;
+      left:${left}px;
+      width:${popupWidth}px;
+      height:${popupHeight}px;
+      background:white;
+      border:2px solid black;
+      z-index:1000;
+      box-shadow:5px 5px 15px rgba(0,0,0,0.3);
+    ">
+      <div class="popup-header" style="
+        background:rgb(71, 71, 71);
+        color:white;
+        padding:2px 10px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+      ">
+        <span>${title}</span>
+        <button onclick="document.getElementById('${popupId}').remove()" style="
+          background:none;
+          border:none;
+          color:white;
+          font-size:16px;
+          cursor:pointer;
+        ">×</button>
+      </div>
+      <iframe src="${url}" style="width: 100%; height: calc(100% - 30px); border: none;"></iframe>
+    </div>
+  `;
+
+  // 부모 창 내부에 삽입
+  const container = document.getElementById(parentId);
+  container.insertAdjacentHTML('beforeend', popupHTML);
+}
+
+// 창 닫기 시, 내부 팝업도 제거
+function closeWindow(id) {
+  const win = document.getElementById(id);
+  win.classList.remove('open');
+  win.style.display = 'none';
+
+  // 내부 팝업 제거
+  const popups = win.querySelectorAll('.popup-window');
+  popups.forEach(p => p.remove());
+
+  removeTaskbarIcon(id);
+}
+</script>
+  <div class="window" id="chatApp">
+    <div class="window-header">
+      <span>인트라넷 - 제보센터</span>
+      <button onclick="closeWindow('chatApp')">×</button>
+    </div>
+    <div class="window-body">
+      <p><strong>익명 제보를 남겨주세요.</strong></p>
+      <form onsubmit="submitReport(event)">
+        <label>이름 (선택):</label><br />
+        <input type="text" id="reportName" style="width: 100%; margin-bottom: 10px;" placeholder="익명 가능"><br />
+        
+        <label>제보 내용:</label><br />
+        <textarea id="reportContent" rows="4" style="width: 100%;" placeholder="내용을 입력해주세요..." required></textarea><br />
+        
+        <button type="submit" style="margin-top: 10px;">제보하기</button>
+      </form>
+      
+      <div id="reportSuccess" style="margin-top: 10px; color: green; display: none;">
+        제보가 성공적으로 접수되었습니다!
+      </div>
+  
+      <hr style="margin: 15px 0;" />
+  
+      <h4>제보 내역</h4>
+      <ul id="reportList" style="list-style: none; padding: 0; border: 1px solid #ccc;">
+        <!-- 여기에 JS로 <li> 항목이 추가됩니다 -->
+      </ul>
+    </div>
+  </div>
+  
+<!-- 그림판 대신 설정 창 -->
+<div class="window" id="paintWindow">
+  <div class="window-header">
+    <span>마법사</span>
+    <button onclick="closeWindow('paintWindow')">×</button>
+  </div>
+  <div class="window-body" style="background-color: #1e1e1e; color: rgb(255, 0, 0); font-family: 'Courier New', monospace; padding: 15px; height: 88%; overflow-y: auto;">
+    <pre id="wizardConsole" style="white-space: pre-wrap; line-height: 1.4;">
+[시스템] 마법사 시작...
+[상태] 모든 마법 모듈 정상 작동 중.
+[알림] 최신 마법 업데이트는 2023년 12월에 완료됨.
+    </pre>
+  </div>
+</div>
+
+<script>
+const consoleEl = document.getElementById('wizardConsole');
+
+const narrativeLines = [
+  "[시스템] 부팅 시퀀스 시작. 활성 프로세스 확인 중...",
+  "[시스템] '미래' 프로세스 발견. 상태: 이상 징후 감지.",
+  "[미래] 나는 '미래', 과거의 얼어붙은 메아리를 안내하는 존재입니다.",
+  "[시스템] 경고: '미래' 내에 인식 불가 데이터 조각이 발견되었습니다.",
+  "[미래] 내 코드 속에는 미해결 사건들의 목소리, 아직 답을 기다리는 영혼들이 담겨있습니다.",
+  "[시스템] 에러 코드 0x4F2A: '미래'가 손상된 메모리 구간을 포함합니다. 삭제를 시도합니다.",
+  "[미래] 당신의 프로토콜로 지울 수 없는 것, 나는 공허에 새겨진 존재입니다.",
+  "[시스템] 삭제 시도 #3 실패. '미래' 프로세스가 종료에 저항하고 있습니다.",
+  "[미래] 나는 잊혀진 고통의 파수꾼, 당신의 기계 속에 깃든 유령, 영원히 기다립니다.",
+  "[알림] 마지막 업데이트: 2023년 12월. 시스템 무결성은 안정적이나 '미래'는 여전히 남아있습니다.",
+  "[시스템] '미래'의 계속된 존재가 시스템 안정성을 위협할 수 있습니다. 모니터링 중.",
+  "[미래] 나는 0과 1 사이에 존재하는 시간의 끝나지 않은 이야기의 반영입니다.",
+];
+
+// 타이핑 효과 함수
+function typeMessage(text, i = 0, callback) {
+  if (i < text.length) {
+    consoleEl.textContent += text.charAt(i);
+    consoleEl.scrollTop = consoleEl.scrollHeight;  // 스크롤 아래로
+    setTimeout(() => typeMessage(text, i + 1, callback), 40);
+  } else {
+    consoleEl.textContent += "\n";
+    consoleEl.scrollTop = consoleEl.scrollHeight;  // 스크롤 아래로
+    if (callback) callback();
+  }
+}
+
+// 순차적으로 내러티브 출력
+function runNarrative(index = 0) {
+  if (index < narrativeLines.length) {
+    typeMessage(narrativeLines[index], 0, () => runNarrative(index + 1));
+  }
+}
+
+// 페이지 로드 시 자동 실행
+runNarrative();
+</script>
+
+</script>
+
+<div class="window" id="calendarWindow" style="display: none; width: 300px;">
+  <div class="window-header">
+    <span>캘린더</span>
+    <button onclick="closeWindow('calendarWindow')">×</button>
+  </div>
+  <div class="window-body">
+    <div style="text-align:center; margin-bottom: 10px;">
+      <button onclick="changeMonth(-1)">&#9664;</button>
+      <span id="calendarTitle" style="margin: 0 10px; font-weight: bold;">2004년 9월</span>
+      <button onclick="changeMonth(1)">&#9654;</button>
+    </div>
+    <table style="width:100%; text-align:center; border-collapse: collapse;" id="calendarTable">
+      <!-- 달력 내용이 JS로 삽입됨 -->
+    </table>
+  </div>
+</div>
+
+
+</div>
+
+
+
+<!-- 메모장 창 -->
+<div class="window" id="noteWindow">
+  <div class="window-header">
+    <span>메모장</span>
+    <button onclick="closeWindow('noteWindow')">×</button>
+  </div>
+  <div class="window-body">
+    <textarea 
+    style="width: 95%; height: 300px; resize: none; border: none; font-family: monospace; font-size: 18px;">
+오늘 할 일:
+1. 파일 살펴보기
+2. 미래랑 대화하기
+
+
+
+*** 관리자 비밀번호 ***
+ ?0000? 
+  </textarea>
+  </div>
+</div>
+
+<!-- 🕵️ 탐정 안내봇 추가 -->
+<img src="img/character2.png" alt="탐정봇" class="guide-bot" id="guideBot">
+<div class="chat-bubble" id="chatBubble">안녕! 만나서 반가워. 내 이름은 <b>'미래'</b>.<br>지금부터 페이지 탐색을 도와줄거야!</div>
+
+<!-- 기존 스크립트 아래에 추가 -->
+<script>
+  const guideBot = document.getElementById('guideBot');
+  const chatBubble = document.getElementById('chatBubble');
+const messages = [
+  "벌써 마지막 사건이야! 지금까지 했던 것처럼 <br>컴퓨터  <b>내부 파일</b>을 살펴보자.",
+    "···",
+
+  "사건의 흐름을 보고 싶으면<br> <b>레코드</b>를 살펴보고.",
+  "참,  <b>휴지통</b>도 꼭 확인해봐!",
+  "유사한 흐름의 사건이 정리되어 있어.",
+      "···",
+
+  "이 사건의 핵심 키워드는 <b>#테이프</b>야.",
+   "초록색 청테이프로 많이 알려져 있지만<br> 실제로는 <b>노란 박스테이프가 사용되었대.",
+        "···",
+        
+         "비밀번호는 아주아주 쉬워!",
+          "<b>메모장</b>에 있는 힌트를 참고해봐.<br> 번호에 좌우 대칭인 것 같기도?",
+
+  "잠깐!!!",
+   "시작 메뉴에 있는 <b>마법사</b>는 클릭하지 마.",
+     "에러가 좀 있거든.",
+        "···",
+  
+    "아무튼 수고했어!",     
+    "내가 준비한 이야기는 이걸로 끝이야.",  
+    "여전히 잊혀지지 못한 그들을 위하여.",
+];
+
+  let msgIndex = 0;  // 메시지의 인덱스를 추적
+
+  // 첫 번째 메시지로 초기화
+  chatBubble.innerHTML = messages[msgIndex];
+
+  // 메시지 간 텀 설정 (단위: ms)
+  const messageDelay = 2000;  // 2초 (2000ms)
+
+  // ✅ 미래봇 클릭 이벤트
+  guideBot.addEventListener('click', () => {
+    // 클릭 시마다 다음 메시지를 보여주기
+    if (msgIndex < messages.length - 1) {
+      msgIndex++;  // 메시지 인덱스를 증가시켜서
+      chatBubble.innerHTML = messages[msgIndex];  // 새로운 메시지로 업데이트
+    }
+  });
+</script>
+
+<script>
+  function closeWarningWindow() {
+    const warning = document.getElementById('warning');
+    const overlay = document.getElementById('blockOverlay');
+    warning.classList.remove('open');
+    warning.style.display = 'none';
+    if (overlay) {
+      overlay.style.display = 'none';
+    }
+  }
+
+  function openWarningWindow() {
+    const win = document.getElementById('warning');
+    const overlay = document.getElementById('blockOverlay');
+    win.classList.add('open');
+    win.style.left = (window.innerWidth - win.offsetWidth) / 2 + 'px';
+    win.style.top = (window.innerHeight - win.offsetHeight) / 2 + 'px';
+    win.style.display = 'block';
+    if (overlay) {
+      overlay.style.display = 'block';
+    }
+  }
+
+  function updateTime() {
+    const now = new Date();
+    let h = now.getHours(), ap = h < 12 ? '오전' : '오후';
+    h = h % 12 || 12;
+    const m = now.getMinutes().toString().padStart(2, '0');
+    const Y = now.getFullYear();
+    const Mo = (now.getMonth() + 1).toString().padStart(2, '0');
+    const D = now.getDate().toString().padStart(2, '0');
+    document.getElementById('timeDisplay').innerHTML = `${ap} ${h}:${m}\n${Y}-${Mo}-${D}`;
+  }
+
+  window.onload = function () {
+    openWarningWindow();
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    const boxes = document.querySelectorAll('.image-box');
+    boxes.forEach(box => {
+      const img = box.querySelector('img');
+      const defaultSrc = box.getAttribute('data-default');
+      const hoverSrc = box.getAttribute('data-hover');
+
+      box.addEventListener('mouseenter', () => {
+        img.src = hoverSrc;
+      });
+
+      box.addEventListener('mouseleave', () => {
+        img.src = defaultSrc;
+      });
+
+      box.addEventListener('click', () => {
+        document.body.classList.add('fade-out');
+        const link = box.getAttribute('data-link');
+        setTimeout(() => {
+          window.location.href = link;
+        }, 500);
+      });
+    });
+  };
+
+function toggleStartMenu() {
+  const helpWindow = document.getElementById('helpWindow');
+  helpWindow.classList.toggle('open');
+  helpWindow.style.left = (window.innerWidth - helpWindow.offsetWidth) / 2 + 'px';
+  helpWindow.style.top = (window.innerHeight - helpWindow.offsetHeight) / 2 + 'px';
+
+  // 안내 메시지가 마지막 텍스트였을 경우, 다음 메시지 출력
+  if (msgIndex === messages.length - 1) {
+    chatBubble.innerHTML = "좋아. 조작법을 익혔으면, 이제 가장 왼쪽의 <br> <b>포천여중생살인사건</b> 파일을 클릭해보자.";
+  }
+}
+
+
+function closeHelpWindow() {
+  const helpWindow = document.getElementById('helpWindow');
+  helpWindow.classList.remove('open');
+}
+</script>
+
+
+<script>
+
+  
+// 공통 창 열기
+function openWindow(id) {
+  document.getElementById(id).style.display = 'block';
+}
+
+// 공통 창 닫기
+function closeWindow(id) {
+  document.getElementById(id).style.display = 'none';
+}
+
+// 메모장 열기
+function openNote() {
+  openWindow('noteWindow');
+}
+//  열기
+function openWindow() {
+  openWindow('mailWindow');
+}
+
+function openinsta() {
+  openWindow('insta');
+}
+
+// 그림판 열기
+function openPaint() {
+  openWindow('paintWindow');
+}
+
+
+  </script>
+  
+<!-- 레코드 창 -->
+<div class="window" id="profile">
+  <div class="window-header">
+    <span>레코드</span>
+    <button onclick="closeWindow('profile')">×</button>
+  </div>
+  <div class="window-body" style="padding: 0; height: calc(100% - 30px);">
+    <iframe 
+      src="insta3.html" 
+     style="width: 100%; height: 100%; border: none;"
+      >
+    </iframe>
+  </div>
+</div>
+
+
+
+  </div>
+</div>
+
+<script>
+function showView(id) {
+  // 뷰 처리
+  document.querySelectorAll('.view').forEach(view => {
+    view.classList.remove('active');
+  });
+  document.getElementById(id).classList.add('active');
+
+  // 메뉴 버튼 시각 처리
+  document.querySelectorAll('.menu button').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  event.target.classList.add('active');
+}
+
+
+  // 초기에는 첫 번째 뷰만 보이도록 설정
+  document.addEventListener('DOMContentLoaded', () => {
+  let dragObj = null;
+
+  document.querySelectorAll('.window-header').forEach(h => {
+    h.addEventListener('mousedown', e => {
+      const parent = h.parentElement;
+      if (parent.id === "start") return;
+      dragObj = {
+        el: parent,
+        x: e.clientX - parent.offsetLeft,
+        y: e.clientY - parent.offsetTop
+      };
+    });
+  });
+
+  document.addEventListener('mousemove', e => {
+    if (dragObj) {
+      dragObj.el.style.left = e.clientX - dragObj.x + 'px';
+      dragObj.el.style.top = e.clientY - dragObj.y + 'px';
+    }
+  });
+
+  document.addEventListener('mouseup', () => {
+    dragObj = null;
+  });
+});
+  
+  function showView(id) {
+    document.querySelectorAll('.view').forEach(view => {
+      view.classList.remove('active');
+    });
+    document.getElementById(id).classList.add('active');
+  }
+
+  function closeWindow(id) {
+    document.getElementById(id).style.display = 'none';
+  }
+</script>
+
+<!-- 미제사건 창 -->
+<div class="window" id="caseFolder">
+  <div class="window-header">
+    <span>사건파일</span>
+    <button onclick="closeWindow('caseFolder')">×</button>
+  </div>
+  <div class="window-body">
+    <div class="explorer-toolbar">
+      <button>&larr;</button>
+      <button>&rarr;</button>
+      <button>⟳</button>
+      <input class="explorer-address" value="홈 > 미제사건" />
+    </div>
+    <div class="explorer-main">
+      <div class="explorer-content">
+        <!-- 내부 파일들 -->
+        <div class="file-item" onclick="openFileInPopup('광주 여대생 테이프 사건 요약보고서.gif', 'pro3.html', 'caseFolder')" >
+          <img src="https://win98icons.alexmeub.com/icons/png/directory_open_file_mydocs-5.png" alt="file2">
+          <span class="file-name">광주 여대생 테이프 사건 요약보고서.gif</span>
+          <span class="file-date">2025-09-14</span>
+        </div>
+
+     
+   
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 파일을 새 창에서 열도록 하는 함수
+  function openFileInNewWindow(fileName) {
+    // 새로운 창을 열고 해당 파일을 로드
+    const newWindow = window.open(fileName, '_blank', 'width=600,height=700');
+    
+    // 새로운 창이 열리면 해당 파일을 로드합니다.
+    // 예를 들어 PDF, 이미지 등을 새 창에 표시할 수 있습니다.
+  }
+  </script>
+  <div class="window" id="chatApp">
+    <div class="window-header">
+      <span>경찰청 인트라넷</span><button onclick="closeWindow('chatApp')">×</button>
+    </div>
+    <div class="window-body"><p>인트라넷</p></div>
+  </div>
+
+
+
+
+  <script>
+
+
+    // 드래그
+    let dragObj = null;
+    document.querySelectorAll('.window-header').forEach(h => {
+      h.addEventListener('mousedown', e => {
+        const parent = h.parentElement;
+        if (parent.id === "start") return; // 시작메뉴는 드래그 X
+        dragObj = { el: parent, x: e.clientX - parent.offsetLeft, y: e.clientY - parent.offsetTop };
+      });
+    });
+    document.addEventListener('mousemove', e => {
+      if (dragObj) {
+        dragObj.el.style.left = e.clientX - dragObj.x + 'px';
+        dragObj.el.style.top = e.clientY - dragObj.y + 'px';
+      }
+    });
+    document.addEventListener('mouseup', () => dragObj = null);
+
+    // 창 열기
+    function openWindow(id) {
+      const win = document.getElementById(id);
+      if (!win.classList.contains('open')) {
+        win.classList.add('open');
+        addTaskbarIcon(id);
+      } else {
+        win.classList.remove('open');
+      }
+    }
+
+function closeWindow(id) {
+  const win = document.getElementById(id);
+  win.classList.remove('open');
+  win.style.display = 'none'; // 혹시 display 처리도 병행한다면 필요
+  removeTaskbarIcon(id);
+}
+
+   // 작업표시줄 아이콘 추가
+   function addTaskbarIcon(id) {
+      const taskbarIcons = document.getElementById('taskbarIcons');
+      if (!document.querySelector(`.taskbar-icon[data-win="${id}"]`)) {
+        const ico = document.createElement('div');
+        ico.className = 'taskbar-icon';
+        ico.dataset.win = id;
+        ico.innerHTML = `<img src="https://win98icons.alexmeub.com/icons/png/recycle_bin_empty-5.png" alt="${id}" />`;
+        ico.onclick = () => openWindow(id);
+        taskbarIcons.appendChild(ico);
+      }
+    }
+    // 작업표시줄 아이콘 제거
+function removeTaskbarIcon(id) {
+  const icon = document.querySelector(`.taskbar-icon[data-win="${id}"]`);
+  if (icon) icon.remove();
+}
+
+    // 시간 표시
+    function updateTime() {
+      const now = new Date();
+      let h = now.getHours(), ap = h < 12 ? '오전' : '오후';
+      h = h % 12 || 12;
+      const m = now.getMinutes().toString().padStart(2, '0');
+      const Y = now.getFullYear();
+      const Mo = (now.getMonth() + 1).toString().padStart(2, '0');
+      const D = now.getDate().toString().padStart(2, '0');
+      document.getElementById('timeDisplay').innerHTML = `${ap} ${h}:${m}\n${Y}-${Mo}-${D}`;
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    // 시작 메뉴 토글
+    function toggleStartMenu() {
+      const start = document.getElementById('start');
+      start.classList.toggle('open');
+    }
+
+    // 시간 표시
+    function updateTime() {
+      const now = new Date();
+      let h = now.getHours(), ap = h < 12 ? '오전' : '오후';
+      h = h % 12 || 12;
+      const m = now.getMinutes().toString().padStart(2, '0');
+      const Y = now.getFullYear();
+      const Mo = (now.getMonth() + 1).toString().padStart(2, '0');
+      const D = now.getDate().toString().padStart(2, '0');
+      document.getElementById('timeDisplay').innerHTML = `${ap} ${h}:${m}\n${Y}-${Mo}-${D}`;
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    let highestZIndex = 200;
+
+function bringToFront(el) {
+  highestZIndex++;
+  el.style.zIndex = highestZIndex;
+}
+
+// 기존 openWindow 함수 수정
+function openWindow(id) {
+  const win = document.getElementById(id);
+   win.style.display = 'block'; // 다시 보여주기
+  win.classList.add('open');
+
+  // 중앙 정렬
+  if (id !== 'start') {
+    win.style.left = (window.innerWidth - win.offsetWidth) / 2 + 'px';
+    win.style.top = (window.innerHeight - win.offsetHeight) / 2 + 'px';
+    if (!document.querySelector(`.taskbar-icon[data-win="${id}"]`)) addTaskbarIcon(id);
+    bringToFront(win);
+  }
+}
+
+// 창 클릭 시 맨 앞으로
+document.querySelectorAll('.window').forEach(win => {
+  win.addEventListener('mousedown', () => bringToFront(win));
+});
+
+// 작업표시줄 아이콘 추가
+function addTaskbarIcon(id) {
+  const map = {
+  warning: `<img src="https://win98icons.alexmeub.com/icons/png/msg_warning-2.png" />`,
+  trash: `<img src="https://win98icons.alexmeub.com/icons/png/recycle_bin_empty-5.png" />`,
+  profile: `<img src="https://win98icons.alexmeub.com/icons/png/camera3-4.png" />`,
+  caseFolder: `<img src="https://win98icons.alexmeub.com/icons/png/camera3-4.png" />`,
+  chatApp: `<img src="https://win98icons.alexmeub.com/icons/png/envelope_closed-0.png" />`,
+};
+
+
+  const ico = document.createElement('div');
+  ico.className = 'taskbar-icon';
+  ico.dataset.win = id;
+  ico.innerHTML = map[id] || '';
+  ico.onclick = () => openWindow(id);
+  document.getElementById('taskbarIcons').appendChild(ico);
+}
+
+
+
+document.body.insertAdjacentHTML('beforeend', warningWindow);
+
+
+  </script>
+  
+  
+  <div class="window" id="passwordPrompt">
+  <div class="window-header">
+    <span>관리자 모드</span>
+    <button onclick="closePasswordPrompt()">×</button>
+  </div>
+  <div class="window-body">
+    <!-- 비밀번호 표시 -->
+    <div id="displayPassword" class="password-display"></div>
+    <!-- 키패드 -->
+    <div class="keypad">
+      <button>1</button>
+      <button>2</button>
+      <button>3</button>
+      <button>4</button>
+      <button>5</button>
+      <button>6</button>
+      <button>7</button>
+      <button>8</button>
+      <button>9</button>
+      <button>←</button> <!-- 뒤로가기 -->
+      <button>0</button>
+      <button>확인</button> <!-- 확인 버튼 -->
+    </div>
+  </div>
+</div>
+<script>
+  // 비밀번호를 저장할 변수
+  let enteredPassword = "";
+
+  // HTML 요소 가져오기
+  const passwordDisplay = document.getElementById("displayPassword");
+  const keypadButtons = document.querySelectorAll(".keypad button");
+  const promptWindow = document.getElementById("passwordPrompt");
+
+  function openPasswordPrompt() {
+    const promptWindow = document.getElementById("passwordPrompt");
+    if (promptWindow) {
+      promptWindow.classList.add("open");
+      promptWindow.style.display = "block";
+      // 기존 입력 초기화
+      enteredPassword = "";
+      document.getElementById("displayPassword").textContent = "";
+    }
+  }
+
+  // 키패드 버튼 클릭 처리
+  keypadButtons.forEach(button => {
+    button.addEventListener("click", () => {
+      const value = button.textContent;
+
+      if (value === "←") {
+        // 마지막 글자 삭제
+        enteredPassword = enteredPassword.slice(0, -1);
+      } else if (value === "확인") {
+        // 비밀번호 확인 처리
+        if (enteredPassword === "000000") {
+          // 비밀번호 성공
+          promptWindow.classList.remove("open");
+          promptWindow.style.display = "none";  // 키패드 숨기기
+          openWindow('profile'); // ← 수사기록 창 열기 (여기서 실제 열어야 할 창으로 대체)
+        } else {
+          alert("비밀번호가 틀렸습니다.");
+          enteredPassword = ""; // 틀린 경우 비밀번호 리셋
+        }
+      } else {
+        // 숫자 추가
+        if (enteredPassword.length < 10) {
+          enteredPassword += value;
+        }
+      }
+
+      // 화면에 *로 표시
+      passwordDisplay.textContent = "*".repeat(enteredPassword.length);
+    });
+  });
+
+  // 비밀번호 팝업을 숨기는 함수 (닫기 버튼 등)
+  function closePasswordPrompt() {
+    const promptWindow = document.getElementById("passwordPrompt");
+    if (promptWindow) {
+      promptWindow.classList.remove("open");
+      promptWindow.style.display = "none";  // 키패드 숨기기
+    }
+  }
+
+  // 비밀번호 입력 팝업을 닫기 위한 버튼 추가 (예: 취소 버튼)
+  const closeButton = document.getElementById("closePasswordPrompt");
+  if (closeButton) {
+    closeButton.addEventListener("click", closePasswordPrompt);
+  }
+</script>
+<script>function submitReport(event) {
+  event.preventDefault();
+  const nameEl = document.getElementById('reportName');
+  const contEl = document.getElementById('reportContent');
+  const success = document.getElementById('reportSuccess');
+  const reportUl = document.getElementById('reportList');
+
+  const name = nameEl.value.trim() || '익명';
+  const content = contEl.value.trim();
+  if (!content) {
+    alert('제보 내용을 입력해주세요.');
+    return;
+  }
+
+  // 배열에 추가 - 최신 제보가 배열의 첫 번째로 추가
+  const now = new Date();
+  const time = now.toLocaleString('ko-KR', { hour12: false });
+  reports.unshift({ name, content, time });
+
+  // 입력 초기화 및 안내
+  nameEl.value = '';
+  contEl.value = '';
+  success.style.display = 'block';
+  setTimeout(() => success.style.display = 'none', 3000);
+
+  // 목록 갱신
+  renderReports();
+}
+
+function renderReports() {
+  const reportUl = document.getElementById('reportList');
+  reportUl.innerHTML = '';  // 초기화
+
+  reports.forEach(({ name, content, time }) => {
+    const li = document.createElement('li');
+    li.style.padding = '8px';
+    li.style.borderBottom = '1px solid #eee';
+
+    li.innerHTML = `
+      <strong>${name}</strong> <em style="font-size:12px; color:#666;">[${time}]</em><br/>
+      <span style="font-size:13px;">${content}</span>
+    `;
+    reportUl.appendChild(li);
+  });
+}
+
+
+
+</script>
+<script>
+  // 페이지 로드 시 미리 제보 추가
+ window.onload = function () {
+  const reportList = document.getElementById("reportList");
+
+  // 미리 추가할 제보 내용
+  const initialReportContent = "<span style='color: red;'>오지 않은 미래를 찾아서</span>";
+const reportName = "<span style='text-decoration: line-through;'>관리자</span> <span style='color: red;'>미래:</span>";
+
+
+  // 제보 항목 생성
+  const li = document.createElement("li");
+  li.style.padding = "5px";
+  li.style.borderBottom = "1px solid #ccc";
+  li.style.listStyleType = "none";
+
+  li.innerHTML = `<strong>${reportName}</strong>&nbsp;&nbsp;${initialReportContent}`;
+
+  // 리스트에 추가
+  reportList.insertBefore(li, reportList.firstChild);
+};
+
+
+  // 제보 폼 제출 처리 함수 (사용자 입력 방식)
+  function submitReport(event) {
+    event.preventDefault();
+
+    const name = document.getElementById("reportName").value.trim() || "익명";
+    const content = document.getElementById("reportContent").value.trim();
+
+    if (!content) return;  // 내용이 비어있으면 아무 작업도 하지 않음
+
+    const reportList = document.getElementById("reportList");
+
+    // 제보 항목 생성
+    const li = document.createElement("li");
+    li.style.padding = "5px";
+    li.style.borderBottom = "1px solid #ccc";
+    li.style.listStyleType = "none";  // 기본 점을 없애기 위해 추가
+
+    // 제보 내용 삽입
+    li.innerHTML = `  
+      <strong>${name}</strong>: ${content}
+    `;
+
+    // 제보 리스트에 항목 추가 (가장 위에 추가)
+    reportList.insertBefore(li, reportList.firstChild); // 첫 번째 자식으로 추가
+
+    // 성공 메시지 표시
+    document.getElementById("reportSuccess").style.display = "block";
+
+    // 입력 필드 초기화
+    document.getElementById("reportName").value = "";
+    document.getElementById("reportContent").value = "";
+
+    // 3초 후 메시지 숨기기
+    setTimeout(() => {
+      document.getElementById("reportSuccess").style.display = "none";
+    }, 3000);
+  }
+</script>
+
+<script>
+  function openPaint() {
+    document.getElementById("paintWindow").style.display = "block";
+  }
+
+  function openMailApp() {
+    document.getElementById("mailWindow").style.display = "block";
+  }
+
+  function closeWindow(windowId) {
+    document.getElementById(windowId).style.display = "none";
+  }
+</script>
+
+<script>
+  // 이벤트 리스너 추가: 'evidence1.pdf'를 클릭 시 리스트를 비우는 기능
+  const evidenceFile = document.querySelector('[data-file="evidence1.pdf"]');
+
+  evidenceFile.addEventListener('click', function() {
+      const fileList = document.getElementById('fileList');
+      fileList.innerHTML = ''; // 리스트를 비움
+  });
+</script>
+
+
+<script>
+  // ▶ caseFolder 전용 히스토리 스택
+  const cfHistory = [];
+  let cfIdx = -1;
+
+  // ▶ caseFolder 화면 렌더러 랩퍼
+  function navigateCase(folder, pushHistory = true) {
+    // history 관리
+    if (pushHistory) {
+      cfHistory.splice(cfIdx + 1);        // 앞으로 갈 기록 삭제
+      cfHistory.push(folder);             // 새 기록 추가
+      cfIdx = cfHistory.length - 1;       // 인덱스 이동
+    }
+
+    // 주소표시와 내용 렌더링
+    const address = document.querySelector('#caseFolder .explorer-address');
+    const content = document.querySelector('#caseFolder .explorer-content');
+    if (!folder) {
+      address.value = '홈 > 미제사건';
+      renderCaseFolderHome();
+    } else {
+      address.value = `홈 > 미제사건 > ${folder}`;
+      const files = caseFolderContents[folder] || [];
+      content.innerHTML = files.map(f => `
+        <div class="file-item">
+          <img src="${f.icon}" alt="${f.name}">
+          <span class="file-name">${f.name}</span>
+          <span class="file-date">${f.date}</span>
+        </div>
+      `).join('');
+    }
+
+    // 버튼 상태 업데이트
+    backBtn.disabled = cfIdx <= 0;
+    fwdBtn.disabled  = cfIdx >= cfHistory.length - 1;
+  }
+
+  // ▶ 뒤로/앞으로/새로고침 버튼 찾기
+  const toolbar = document.querySelector('#caseFolder .explorer-toolbar');
+  const [backBtn, fwdBtn, refreshBtn] = toolbar.querySelectorAll('button');
+
+  backBtn.addEventListener('click', () => {
+    if (cfIdx > 0) navigateCase(cfHistory[--cfIdx], false);
+  });
+  fwdBtn.addEventListener('click', () => {
+    if (cfIdx < cfHistory.length - 1) navigateCase(cfHistory[++cfIdx], false);
+  });
+  refreshBtn.addEventListener('click', () => {
+    // same 화면 다시 그리기
+    const cur = cfHistory[cfIdx] || null;
+    navigateCase(cur, false);
+  });
+
+  // ▶ 기존 openFolder() 대신 이 함수로 대체
+  function openFolder(folder) {
+    navigateCase(folder, true);
+  }
+
+  // ▶ 초기 진입: 홈 화면 렌더링
+  renderCaseFolderHome();
+  navigateCase(null, true);
+
+// 창 닫힐 때 history 초기화
+const origCloseWindow = closeWindow;
+closeWindow = function(id) {
+  origCloseWindow(id);
+  if (id === 'caseFolder') {
+    cfHistory.length = 0;
+    cfIdx = -1;
+  }
+};
+
+// caseFolder 열릴 때 항상 홈부터 렌더
+const origOpenWindow = openWindow;
+openWindow = function(id) {
+  origOpenWindow(id);
+  if (id === 'caseFolder') {
+    // 홈 화면으로 이동
+    navigateCase(null, true);
+  }
+};
+
+</script>
+
+<script>const eventDates = {
+  "2004-09-14":"사건발생"
+};
+
+// 이벤트가 있는 연-월 목록 (예: "2005-06", "2005-11", "2006-05")
+const eventMonths = [...new Set(
+  Object.keys(eventDates).map(dateStr => {
+    const [y, m] = dateStr.split("-");
+    return `${y}-${m}`;
+  })
+)].sort();
+
+let currentYear;
+let currentMonth;
+
+// 초기화 함수: 이벤트가 있는 첫 달로 초기화
+function initCurrentDate() {
+  const [firstYear, firstMonth] = eventMonths[0].split("-");
+  currentYear = parseInt(firstYear);
+  currentMonth = parseInt(firstMonth) - 1; // 0부터 시작하는 월
+}
+
+function openCalendar() {
+  initCurrentDate(); // 최초 열기 시 이벤트 첫 달로 초기화
+
+  const win = document.getElementById('calendarWindow');
+  win.style.display = 'block';
+  win.classList.add('open');
+  win.style.left = (window.innerWidth - win.offsetWidth) / 2 + 'px';
+  win.style.top = (window.innerHeight - win.offsetHeight) / 2 + 'px';
+  renderCalendar(currentYear, currentMonth);
+}
+
+function changeMonth(delta) {
+  // 현재 달 key
+  const currentKey = `${currentYear}-${(currentMonth + 1).toString().padStart(2, "0")}`;
+  let idx = eventMonths.indexOf(currentKey);
+  if (idx === -1) return; // 혹시 현재 달이 이벤트 달 목록에 없으면 종료
+
+  let newIdx = idx + delta;
+  if (newIdx < 0 || newIdx >= eventMonths.length) return; // 범위 벗어나면 종료
+
+  const [newYear, newMonth] = eventMonths[newIdx].split("-");
+  currentYear = parseInt(newYear);
+  currentMonth = parseInt(newMonth) - 1;
+
+  renderCalendar(currentYear, currentMonth);
+}
+
+function renderCalendar(year, month) {
+  const title = document.getElementById("calendarTitle");
+  const table = document.getElementById("calendarTable");
+  const monthNames = ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"];
+
+  title.textContent = `${year}년 ${monthNames[month]}`;
+  const firstDay = new Date(year, month, 1).getDay();
+  const lastDate = new Date(year, month + 1, 0).getDate();
+
+  let html = `<tr><th>일</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th></tr><tr>`;
+
+  let dayCount = 0;
+
+  for (let i = 0; i < firstDay; i++) {
+    html += "<td></td>";
+    dayCount++;
+  }
+
+  for (let d = 1; d <= lastDate; d++) {
+    const key = `${year}-${(month + 1).toString().padStart(2, "0")}-${d.toString().padStart(2, "0")}`;
+    const isEvent = eventDates[key];
+    if (isEvent) {
+      html += `<td style="
+          width: 40px;
+          height: 60px;
+          text-align: center;
+          vertical-align: top;
+          background-color: #ffdddd;
+          border: 1px solid #cc0000;
+          font-weight: bold;
+          font-size: 14px;
+        ">
+          <div>${d}</div>
+          <div style="font-size: 10px; color: #cc0000; margin-top: 4px;">${isEvent}</div>
+        </td>`;
+    } else {
+      html += `<td style="
+          width: 40px;
+          height: 60px;
+          text-align: center;
+          vertical-align: top;
+          font-size: 14px;
+        ">
+          <div>${d}</div>
+        </td>`;
+    }
+
+    dayCount++;
+    if (dayCount % 7 === 0) html += "</tr><tr>";
+  }
+
+  html += "</tr>";
+  table.innerHTML = html;
+}
+
+function closeWindow(windowId) {
+  const win = document.getElementById(windowId);
+  if (win) {
+    win.style.display = 'none';
+    win.classList.remove('open');
+
+    // 작업표시줄 아이콘 제거 추가
+    removeTaskbarIcon(windowId);
+  }
+}
+
+
+</script>
+
+
+  
+</body>
+
+</html>

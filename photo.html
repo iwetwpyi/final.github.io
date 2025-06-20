@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PDF 느낌 이미지 뷰어</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #d0d0d0;
+      background-color: #111;
+    }
+
+    .slider-container {
+      width: 550px;
+      height: 90vh;
+      overflow-y: auto;
+      margin: 50px auto;
+      border-radius: 10px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .slider-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .slider {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .slider img {
+      width: 550px;
+      height: auto;
+      object-fit: contain;
+      border-radius: 10px;
+      cursor: default;
+    }
+
+    .slider img:hover {
+      transform: scale(1.01);
+      transition: transform 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="slider-container">
+    <div class="slider">
+      <img src="img/report1.png" alt="report1" />
+      <img src="img/report2.png" alt="report2" />
+      <img src="img/report3.png" alt="report3" />
+    </div>
+  </div>
+
+</body>
+</html>

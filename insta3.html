@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>NCT WISH Instagram Feed</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fafafa;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      max-width: 600px;
+      width: 90%;
+      margin: 0 auto;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .profile-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 0;
+      text-align: center;
+      border-bottom: 1px solid #dbdbdb;
+    }
+
+    .profile-section img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 1px solid #dbdbdb;
+      margin-bottom: 15px;
+    }
+
+    .profile-info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .username {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .bio {
+      font-size: 14px;
+      color: #555;
+    }
+
+    .bio a {
+      color: #00376b;
+      text-decoration: none;
+    }
+
+    .profile-menu {
+      font-size: 14px;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .profile-menu span {
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .profile-menu span:hover {
+      text-decoration: underline;
+    }
+
+    .section-title {
+      padding: 20px 0;
+      text-align: center;
+      font-size: 18px;
+      color: #000;
+    }
+
+    .feed {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* 기본적으로 1열 또는 2열로 배치 */
+      gap: 20px;
+      padding-bottom: 40px;
+    }
+
+    .post {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .post img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+
+    .caption {
+      padding: 10px;
+      font-size: 14px;
+      color: #333;
+      text-align: left;
+      line-height: 1.6;
+    }
+
+    /* Bold text in captions */
+    .caption b {
+      font-weight: bold;
+    }
+
+    /* Media query for responsiveness */
+    @media (max-width: 768px) {
+      .profile-section {
+        padding: 15px;
+      }
+
+      .username {
+        font-size: 20px;
+      }
+
+      .bio {
+        font-size: 12px;
+      }
+
+      .profile-menu {
+        font-size: 12px;
+      }
+
+      .section-title {
+        font-size: 16px;
+      }
+
+      .caption {
+        font-size: 12px;
+      }
+    }
+
+    /* 600px 이하에서 피드를 2열로 배치 */
+    @media (max-width: 600px) {
+      .feed {
+        grid-template-columns: repeat(2, 1fr); /* 2열로 배치 */
+      }
+
+      .post {
+        margin: 0;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="container">
+      <div class="profile-section">
+        <img src="img/insta3_6.png" alt="Profile" />
+        <div class="profile-info">
+          <div class="username">@ future_hope</div>
+          <div class="profile-menu">
+            <span>증거물 <b>5</b></span>
+            <span>피해자 <b>1</b></span>
+            <span>용의자 <b>미제</b></span>
+          </div>
+          <div class="bio">
+            <strong>광주 여대생 테이프 살인 사건</strong><br />
+            2004년 9월, 22세 대학생 김희수 씨가 광주 북구의 자택에서 발견된 끔찍한 사건<br />
+            <a href="https://www.sbs.co.kr" target="_blank">SBS '그것이 알고 싶다'</a> 방송에서 다룬 미제 사건
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">
+        <span>게시물</span>
+      </div>
+
+      <div class="feed">
+        <div class="post">
+          <img src="img/insta3_5.png" alt="증거물 1">
+          <div class="caption"><b>사건 추정 이동 경로</b><br> 사건 발생 전후, 피해자 김희수 씨는 아침 8시 55분쯤 집을 떠나기 직전 공격을 받은 것으로 추정된다. 현관에서부터 시작된 범행의 흔적은 피해자의 방까지 이어졌고, 범인은 최소 1시간 이상 현장에 머물며 증거물을 남겼다.</div>
+        </div>
+
+        <div class="post">
+          <img src="img/insta3_1.png" alt="증거물 2">
+          <div class="caption"><b>사건현장 전개도</b><br> 김희수 씨는 집에서 혼자 있던 시간대에 폭행당하고 질식사한 것으로 보인다. 침대 위에서 발견된 그녀의 모습과 현관에 흩어진 소지품이 이를 증명하며, 피해자는 외출을 준비하던 중에 끔찍한 범죄를 당한 것이다.</div>
+        </div>
+
+        <div class="post">
+          <img src="img/insta3_4.png" alt="증거물 3">
+          <div class="caption"><b>피해자 거주지</b><br>김희수 씨는 광주 북구의 15층 아파트 13층에 거주하고 있었다. 아파트 구조상, 범인이 외부에서 침입하기 어려운 조건이었으며, 집에 있던 테이프와 머플러는 모두 피해자의 가정에서 사용되던 물품이었다.</div>
+        </div>
+
+        <div class="post">
+          <img src="img/insta3_3.png" alt="증거물 4">
+          <div class="caption"><b>흩어진 피해자 소지품</b><br> 사건 당시, 김희수 씨의 책가방, 디지털 카메라, 도시락통 등 소지품들이 현관에 아무렇게나 떨어져 있었다. 특히, 13,000원이 들어있던 지갑만이 사라졌으며, 이는 범인이 금전적인 목적을 가지고 범행을 저질렀다는 추정을 가능하게 했다.</div>
+        </div>
+
+        <div class="post">
+          <img src="img/insta3_2.png" alt="증거물 5">
+          <div class="caption"><b>파헤쳐진 피해자 가방</b><br> 현장에서 발견된 가방과 신용카드, 카메라 등의 소지품들은 범인이 이들을 하나씩 뒤진 후에 놓고 간 것처럼 보인다. 범행의 목적이 강도가 아니라면, 피해자와의 연관이 있는 인물에 의해 저질러졌을 가능성이 높다.</div>
+        </div>
+
+        <div class="post">
+          <img src="img/insta3_6.png" alt="증거물 6">
+          <div class="caption"><b>범행 당시 사용된 박스테이프</b><br> 범인은 피해자의 얼굴과 머리에 박스 테이프를 감아 질식시켰다. 이 테이프는 피해자가 집에서 평소 사용하던 테이프로, 범행에 사용된 테이프가 미리 준비된 것이 아니라 즉흥적으로 사용되었다는 점에서 비면식범에 의한 범행 가능성이 높다.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

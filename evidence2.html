@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>타임라인 애니메이션</title>
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/pretendard.css" rel="stylesheet" />
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #353535;
+      font-family: 'Pretendard', sans-serif;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .scene {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: panRight 2.5s ease-out forwards;
+      animation-delay: 2s;
+    }
+
+    .timeline-wrapper {
+      position: relative;
+      width: 100vw;
+      height: 180px;
+      transition: transform 1s ease;
+    }
+
+    .outer-circle-2, .inner-circle-2 {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: #DEC35E;
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      animation: popIn 1s ease-out forwards;
+      cursor: pointer;
+      z-index: 3;
+    }
+
+    .inner-circle-2 { top: 50%; left: 50%; animation-delay: 1.8s; }
+    .outer-circle-2 { top: 50%; left: 50%; animation-delay: 2s; }
+
+    .line {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      height: 1px;
+      background-color: #DEC35E;
+      width: 200vw;
+      transform: translateY(-50%);
+      z-index: 1;
+    }
+
+    .year-text-2 { left: 50%; transform: translateX(-50%); animation-delay: 1.6s; }
+
+    .subtitle-2 {
+      position: absolute;
+      top: calc(20% + 80px);
+      font-size: 14px;
+      font-weight: 400;
+      color: #DEC35E;
+      opacity: 0;
+      animation: fadeIn 0.6s ease-out forwards;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .subtitle-2 { left: 50%; transform: translateX(-50%); animation-delay: 2s; }
+
+    @keyframes popIn {
+      0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+      60% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+      100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    @keyframes panRight {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-220px); }
+    }
+
+    .inner-circle-3,
+    .inner-circle-4,
+    .inner-circle-5 {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background-color: #DEC35E;
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      animation: popIn 1s ease-out forwards;
+      cursor: pointer;
+      z-index: 3;
+    }
+
+    .inner-circle-3 { top: 50%; left: calc(50% + 350px); animation-delay: 3s; }
+    .inner-circle-4 { top: 50%; left: calc(50% + 550px); animation-delay: 3.2s; }
+    .inner-circle-5 { top: 50%; left: calc(50% + 750px); animation-delay: 3.4s; }
+
+    .fixed-circle {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+    }
+
+    .active-text {
+      position: absolute;
+      font-size: 14px;
+      color: #DE5E5E;
+      transition: opacity 0.3s ease, visibility 0s ease 0.3s;
+      white-space: nowrap;
+      text-align: center;
+      visibility: hidden;
+      opacity: 0;
+    }
+
+    .show {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .selected-circle {
+      background-color: #DE5E5E;
+      box-sizing: border-box;
+    }
+
+    .timeline-item {
+      position: absolute;
+      width: 200vw;
+      height: 0;
+      top: 10vh;
+      background-color: #4a4a4a;
+      z-index: 0;
+      visibility: hidden;
+      transition: height 0.5s ease-out, visibility 0s 0.5s;
+    }
+
+    @keyframes slideUpBackground {
+      0% {
+        height: 0;
+        visibility: visible;
+      }
+      100% {
+        height: 100vh;
+        visibility: visible;
+      }
+    }
+
+    .show-background {
+      visibility: visible;
+      height: 100vh;
+      animation: slideUpBackground 0.5s ease-out forwards;
+    }
+
+    .additional-text {
+      position: absolute;
+      font-size: 25px;
+      font-weight: bold;
+      color: #ffffff;
+      opacity: 0;
+      visibility: hidden;
+      white-space: nowrap;
+      text-align: center;
+      margin-top: 10vh;
+      transform: translateX(-50%) translateY(30px);
+    }
+
+    .show-additional {
+      visibility: visible;
+      opacity: 1;
+      animation: slideUp 0.5s ease-out forwards;
+    }
+
+.clue-section {
+  max-width: 600px;
+  margin: 20px auto;
+  opacity: 0;
+  transform: translateY(30px) translateX(-50%);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  position: absolute;
+  left: 50%; /* 화면의 중앙으로 배치 */
+  z-index: 10;
+}
+
+
+    .clue-section.show-clue {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .sub-text {
+      position: absolute;
+      font-size: 18px;
+      font-weight: 300;
+      color: #f0f0f0;
+      opacity: 0;
+      visibility: hidden;
+      white-space: nowrap;
+      text-align: center;
+      transform: translateX(50%) translateY(100px);
+      transition: opacity 0.5s ease;
+    }
+
+    .show-sub {
+      visibility: visible;
+      opacity: 1;
+      animation: slideUp 0.5s ease-out forwards;
+    }
+  </style>
+</head>
+<body>
+  <div class="scene">
+    <div class="timeline-wrapper">
+      <div class="outer-circle-2"></div>
+      <div class="inner-circle-2"></div>
+      <div class="year-text-2">2004</div>
+      <div class="subtitle-2">광주 여대생 살인사건</div>
+
+      <div class="line"></div>
+
+      <div class="inner-circle-3"></div>
+      <div class="inner-circle-4"></div>
+      <div class="inner-circle-5"></div>
+
+      <div class="timeline-item" id="timeline-item-1"></div>
+      <div class="timeline-item" id="timeline-item-2"></div>
+      <div class="timeline-item" id="timeline-item-3"></div>
+
+      <div class="active-text" id="text-1">사건개요</div>
+      <div class="active-text" id="text-2">타임라인</div>
+      <div class="active-text" id="text-3">제보 및 증언</div>
+
+      <div class="additional-text" id="additional-text-1">사건 개요</div>
+
+      <div class="sub-text" id="sub-text-1">
+        2003년 11월 5일, 경기도 포천시에서 일어난 여중생 엄현아 양이 귀갓길에 피살된 사건
+      </div>
+
+      <div class="clue-section" id="clue-section">
+        <div class="clue-item">🔎 현장에서 발견된 담배 꽁초 (DNA 미확인)</div>
+        <div class="clue-item">📷 CCTV에 잠시 찍힌 검은색 차량</div>
+        <div class="clue-item">📞 피해자의 마지막 통화 기록 - 신원 미상의 번호</div>
+      </div>
+
+      <div class="additional-text" id="additional-text-2">타임라인 상세 내용</div>
+      <div class="additional-text" id="additional-text-3">주요 제보 및 증언들</div>
+    </div>
+  </div>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>타임라인 애니메이션</title>
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/pretendard.css" rel="stylesheet" />
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #353535;
+      font-family: 'Pretendard', sans-serif;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .scene {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: panRight 2.5s ease-out forwards;
+      animation-delay: 2s;
+    }
+
+    .timeline-wrapper {
+      position: relative;
+      width: 100vw;
+      height: 180px;
+      transition: transform 1s ease;
+    }
+
+    .outer-circle-2, .inner-circle-2 {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: #DEC35E;
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      animation: popIn 1s ease-out forwards;
+      cursor: pointer;
+      z-index: 3;
+    }
+
+    .inner-circle-2 { top: 50%; left: 50%; animation-delay: 1.8s; }
+    .outer-circle-2 { top: 50%; left: 50%; animation-delay: 2s; }
+
+    .line {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      height: 1px;
+      background-color: #DEC35E;
+      width: 200vw;
+      transform: translateY(-50%);
+      z-index: 1;
+    }
+
+    .year-text-2 { left: 50%; transform: translateX(-50%); animation-delay: 1.6s; }
+
+    .subtitle-2 {
+      position: absolute;
+      top: calc(20% + 80px);
+      font-size: 14px;
+      font-weight: 400;
+      color: #DEC35E;
+      opacity: 0;
+      animation: fadeIn 0.6s ease-out forwards;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .subtitle-2 { left: 50%; transform: translateX(-50%); animation-delay: 2s; }
+
+    @keyframes popIn {
+      0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+      60% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+      100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    @keyframes panRight {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-220px); }
+    }
+
+    .inner-circle-3,
+    .inner-circle-4,
+    .inner-circle-5 {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background-color: #DEC35E;
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      animation: popIn 1s ease-out forwards;
+      cursor: pointer;
+      z-index: 3;
+    }
+
+    .inner-circle-3 { top: 50%; left: calc(50% + 350px); animation-delay: 3s; }
+    .inner-circle-4 { top: 50%; left: calc(50% + 550px); animation-delay: 3.2s; }
+    .inner-circle-5 { top: 50%; left: calc(50% + 750px); animation-delay: 3.4s; }
+
+    .fixed-circle {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+    }
+
+    .active-text {
+      position: absolute;
+      font-size: 14px;
+      color: #DE5E5E;
+      transition: opacity 0.3s ease, visibility 0s ease 0.3s;
+      white-space: nowrap;
+      text-align: center;
+      visibility: hidden;
+      opacity: 0;
+    }
+
+    .show {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .selected-circle {
+      background-color: #DE5E5E;
+      box-sizing: border-box;
+    }
+
+    .timeline-item {
+      position: absolute;
+      width: 200vw;
+      height: 0;
+      top: 10vh;
+      background-color: #4a4a4a;
+      z-index: 0;
+      visibility: hidden;
+      transition: height 0.5s ease-out, visibility 0s 0.5s;
+    }
+
+    @keyframes slideUpBackground {
+      0% {
+        height: 0;
+        visibility: visible;
+      }
+      100% {
+        height: 100vh;
+        visibility: visible;
+      }
+    }
+
+    .show-background {
+      visibility: visible;
+      height: 100vh;
+      animation: slideUpBackground 0.5s ease-out forwards;
+    }
+
+    .additional-text {
+      position: absolute;
+      font-size: 25px;
+      font-weight: bold;
+      color: #ffffff;
+      opacity: 0;
+      visibility: hidden;
+      white-space: nowrap;
+      text-align: center;
+      margin-top: 10vh;
+      transform: translateX(-50%) translateY(30px);
+    }
+
+    .show-additional {
+      visibility: visible;
+      opacity: 1;
+      animation: slideUp 0.5s ease-out forwards;
+    }
+
+    .clue-section {
+      max-width: 600px;
+      margin: 20px auto;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .clue-section.show-clue {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .sub-text {
+      position: absolute;
+      font-size: 18px;
+      font-weight: 300;
+      color: #f0f0f0;
+      opacity: 0;
+      visibility: hidden;
+      white-space: nowrap;
+      text-align: center;
+      transform: translateX(50%) translateY(100px);
+      transition: opacity 0.5s ease;
+    }
+
+    .show-sub {
+      visibility: visible;
+      opacity: 1;
+      animation: slideUp 0.5s ease-out forwards;
+    }
+  </style>
+</head>
+<body>
+  <div class="scene">
+    <div class="timeline-wrapper">
+      <div class="outer-circle-2"></div>
+      <div class="inner-circle-2"></div>
+      <div class="year-text-2">2004</div>
+      <div class="subtitle-2">광주 여대생 살인사건</div>
+
+      <div class="line"></div>
+
+      <div class="inner-circle-3"></div>
+      <div class="inner-circle-4"></div>
+      <div class="inner-circle-5"></div>
+
+      <div class="timeline-item" id="timeline-item-1"></div>
+      <div class="timeline-item" id="timeline-item-2"></div>
+      <div class="timeline-item" id="timeline-item-3"></div>
+
+      <div class="active-text" id="text-1">사건개요</div>
+      <div class="active-text" id="text-2">타임라인</div>
+      <div class="active-text" id="text-3">제보 및 증언</div>
+
+      <div class="additional-text" id="additional-text-1">사건 개요</div>
+
+      <div class="sub-text" id="sub-text-1">
+        2003년 11월 5일, 경기도 포천시에서 일어난 여중생 엄현아 양이 귀갓길에 피살된 사건
+      </div>
+
+      <div class="clue-section" id="clue-section">
+        <div class="clue-item">🔎 현장에서 발견된 담배 꽁초 (DNA 미확인)</div>
+        <div class="clue-item">📷 CCTV에 잠시 찍힌 검은색 차량</div>
+        <div class="clue-item">📞 피해자의 마지막 통화 기록 - 신원 미상의 번호</div>
+      </div>
+
+      <div class="additional-text" id="additional-text-2">타임라인 상세 내용</div>
+      <div class="additional-text" id="additional-text-3">주요 제보 및 증언들</div>
+    </div>
+  </div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const circles = document.querySelectorAll('.inner-circle-3, .inner-circle-4, .inner-circle-5');
+  const texts = [
+    document.getElementById('text-1'),
+    document.getElementById('text-2'),
+    document.getElementById('text-3'),
+  ];
+  const additionalTexts = [
+    document.getElementById('additional-text-1'),
+    document.getElementById('additional-text-2'),
+    document.getElementById('additional-text-3'),
+  ];
+  const backgroundItems = [
+    document.getElementById('timeline-item-1'),
+    document.getElementById('timeline-item-2'),
+    document.getElementById('timeline-item-3'),
+  ];
+  const subText1 = document.getElementById('sub-text-1');
+  const clueSection = document.getElementById('clue-section'); 
+
+  circles.forEach((circle, index) => {
+    circle.addEventListener('click', () => {
+      // Reset states
+      texts.forEach(text => {
+        text.classList.remove('show');
+        text.style.top = '';
+        text.style.left = '';
+      });
+
+      additionalTexts.forEach(text => text.classList.remove('show-additional'));
+      backgroundItems.forEach(item => item.classList.remove('show-background'));
+      subText1.classList.remove('show-sub');
+      clueSection.classList.remove('show-clue'); 
+
+      // Show active text near clicked circle
+      const circleRect = circle.getBoundingClientRect();
+      const timelineWrapperRect = document.querySelector('.timeline-wrapper').getBoundingClientRect();
+
+      texts[index].style.top = `${circleRect.top - timelineWrapperRect.top + 30}px`;
+      texts[index].style.left = `${circleRect.left - timelineWrapperRect.left - texts[index].offsetWidth / 2}px`;
+
+      // Mark the selected circle
+      circles.forEach(c => c.classList.remove('selected-circle'));
+      circle.classList.add('selected-circle');
+
+      // Adjust timeline wrapper position
+      const timelineWrapper = document.querySelector('.timeline-wrapper');
+      timelineWrapper.style.transform = 'translate(-20vw, -30vh)';
+
+      // Show active text and additional text
+      texts[index].classList.add('show');
+      additionalTexts[index].classList.add('show-additional');
+      additionalTexts[index].style.top = `${circleRect.top - timelineWrapperRect.top + 30 + texts[index].offsetHeight + 20}px`;
+      additionalTexts[index].style.left = `50vw`;
+
+      // Show background items
+      backgroundItems[index].classList.add('show-background');
+// Sub-text and clue section handling
+if (index === 0) {
+  subText1.classList.add('show-sub');
+  subText1.style.top = `${circleRect.top - timelineWrapperRect.top + 160}px`;  // Adjust sub-text position
+  subText1.style.left = `50vw`;
+
+  // Show clue section below sub-text
+  clueSection.classList.add('show-clue'); 
+
+  // Get the position of sub-text to position the clue-section just below it
+  const subText1Rect = subText1.getBoundingClientRect();
+  clueSection.style.top = `${subText1Rect.bottom + 10}px`;  // Position clue section below sub-text
+  clueSection.style.left = '50%';  // Align to the center of the screen
+  clueSection.style.transform = 'translateX(-50%)';  // Center the clue section
+
+  // Animate the clue-section's appearance
+  gsap.to(clueSection, {
+    opacity: 1,
+    y: 0,
+    duration: 0.6
+  });
+
+  // Animate the clue items to appear one by one
+  const clueItems = clueSection.querySelectorAll('.clue-item');
+  clueItems.forEach((item, i) => {
+    gsap.to(item, {
+      opacity: 1,
+      x: 0,
+      duration: 0.8,
+      delay: i * 0.2, // Delay to make them appear sequentially
+      ease: 'ease-out'
+    });
+  });
+}
+
+    });
+  });
+});
+</script>
+
+</body>
+</html>
+
+</body>
+</html>

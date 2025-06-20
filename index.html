@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>이미지 선택</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #004080;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;    
+    }
+
+    .taskbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50px;
+      background-color: #c0c0c0;
+      border-top: 2px solid #fff;
+      border-bottom: 2px solid #808080;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0 10px;
+      box-sizing: border-box;
+      z-index: 100;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .taskbar-icons {
+      display: flex;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .win98-button {
+      font-family: 'Tahoma', sans-serif;
+      font-size: 13px; /* 약간 키움 */
+      padding: 4px 10px; /* 상하좌우 여백 약간 키움 */
+      margin: 3px 5px;
+      background: #c0c0c0;
+      border: 2px solid;
+      border-color: #ffffff #808080 #808080 #ffffff;
+      box-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #ffffff;
+      color: black;
+      cursor: pointer;
+      transition: background-color 0.3s ease; /* 마우스를 올렸을 때 배경색 변환 */
+    }
+
+    .win98-button:hover {
+      background-color: #808080; /* 마우스를 올리면 색상 변경 */
+    }
+
+    .time-display {
+      margin-left: auto;
+      color: #000;
+      font-size: 12px;
+      text-align: right;
+      white-space: pre;
+    }
+
+    .window {
+      display: none;
+      position: absolute;
+      width: 600px;
+      height: auto;
+      background-color: #ffffff;
+      border: 2px solid #000;
+      z-index: 200;
+      flex-direction: column;
+    }
+
+    .window.open {
+      display: flex;
+    }
+
+    .window-header {
+      background-color: navy;
+      color: #fff;
+      padding: 6px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: move;
+    }
+
+    .window-header button {
+      background-color: #c0c0c0;
+      border: 1px solid #000;
+      padding: 0 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .window-body {
+      padding: 10px;
+      background-color: #ffffff;
+      flex: 1;
+      overflow: auto;
+      padding: 20px;
+    }
+
+    .image-row {
+      display: flex;
+      gap: 40px;
+    }
+
+    .image-box {
+      width: 300px;
+      height: 250px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .image-box:hover {
+      transform: scale(1.05);
+    }
+
+    .image-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: opacity 0.3s ease;
+    }
+
+    .fade-out {
+      animation: fadeOut 0.5s forwards;
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+    }
+
+     #warning {
+        width: 500px;
+        background-color: #ffffff;
+        border: 2px solid #000;
+        box-shadow: 3px 3px 0 #000;
+        position: absolute;
+        top: 100px;
+        left: 100px;
+        z-index: 9999;
+    }
+
+    #warning .window-header {
+      background-color: #000080;
+      color: white;
+      padding: 4px 10px;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 25px;
+    }
+
+    #warning .window-header button {
+      background-color: #c0c0c0;
+      border: 2px outset #fff;
+      width: 22px;
+      height: 20px;
+      font-weight: bold;
+      color: #000;
+      cursor: pointer;
+    }
+
+    #warning .window-body {
+      padding: 20px;
+      background-color: #ffffff;
+      border-top: 2px solid #808080;
+      font-size: 16px;
+      color: #000;
+      line-height: 1.5;
+    }
+
+    #warning .window-body p {
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .menu button,
+    #continue-button {
+      font-size: 12px;
+      padding: 4px 10px;
+      border: 2px outset #fff;
+      background-color: #bbbbbb;
+      color: black;
+      cursor: pointer;
+      box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.486);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .button-row {
+      text-align: center;
+    }
+#blockOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: transparent;
+  z-index: 9998;
+  display: none; /* 처음에는 안 보이게 */
+}
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #004080;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;    
+    }
+
+  /* === 탐정 캐릭터 스타일 === */
+  .guide-bot {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    width: 80px;
+    height: auto;
+    z-index: 1000;
+    animation: float 2s ease-in-out infinite;
+    transition: top 1s, right 1s;
+    
+    cursor: pointer;
+  }
+
+  .chat-bubble {
+    position: fixed;
+    top: 60px;
+    right: 110px;
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #000;
+    border-radius: 5px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-family: 'Tahoma', sans-serif;
+    max-width: 250px;
+    z-index: 1001;
+    box-shadow: 2px 2px 0 #333;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+
+  
+  .win98-button.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  /* 탐정봇에 빛나는 애니메이션 효과 */
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.4), 0 0 10px rgba(0, 255, 255, 0.6), 0 0 15px rgba(0, 255, 255, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.8), 0 0 25px rgba(0, 255, 255, 0.9), 0 0 30px rgba(0, 255, 255, 1);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.4), 0 0 10px rgba(0, 255, 255, 0.6), 0 0 15px rgba(0, 255, 255, 0.7);
+  }
+}
+.outline-glow {
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.664))
+          drop-shadow(0 0 10px rgba(255, 255, 200, 0.243))
+          drop-shadow(0 0 20px rgba(255, 255, 180, 0.4));
+  transition: filter 0.3s ease-in-out;
+}
+
+  </style>
+</head>
+<body>
+
+  <div class="image-row">
+    <div class="image-box" data-link="1.html" data-default="img/case1.png" data-hover="img/case11.png">
+      <img src="img/case1.png" alt="이미지 1">
+    </div>
+    <div class="image-box" data-link="2.html" data-default="img/case2.png" data-hover="img/case22.png">
+      <img src="img/case2.png" alt="이미지 2">
+    </div>
+    <div class="image-box" data-link="3.html" data-default="img/case3.png" data-hover="img/case33.png">
+      <img src="img/case3.png" alt="이미지 3">
+    </div>
+  </div>
+
+  <!-- 작업 표시줄 -->
+  <div class="taskbar">
+<div class="win98-button" id="helpBtn" onclick="toggleStartMenu()">사용법</div>
+
+    <!-- 시간 표시 -->
+    <div class="time-display" id="timeDisplay">00:00:00</div>
+  </div>
+
+  <div class="window" id="warning">
+    <div class="window-header">
+      <span>경고</span>
+      <button onclick="closeWarningWindow()">×</button>
+    </div>
+    <div class="window-body">
+      <p>
+        본 사이트는 실제 미제 사건을 기반으로 구성되어 있습니다.
+        민감한 내용이 포함될 수 있으니 주의해주시기 바랍니다.
+      </p>
+      <div class="button-row">
+        <button id="continue-button" onclick="closeWarningWindow()">계속하시겠습니까?</button>
+      </div>
+    </div>
+  </div>
+<div class="window" id="helpWindow">
+  <div class="window-header">
+    <span>사용법</span>
+    <button onclick="closeHelpWindow()">×</button>
+  </div>
+<div class="window-body" style="padding: 20px;">
+
+
+
+<!-- 텍스트 본문 -->
+<h4><img src="https://win98icons.alexmeub.com/icons/png/monitor_tweakui-1.png" style="width: 1px; width: auto;"> 사이트 안내</h4>
+<p style="font-size:14px; line-height:1.8;">
+  이 웹사이트는 <b>1990년대 컴퓨터 화면</b>을 재현한 형식으로, 사용자가 직접 <b>미제 사건</b>과 관련된 단서와 정보를 수집할 수 있도록 설계되었습니다.<br><br>
+  당신은 지금 한 대의 오래된 컴퓨터 앞에 앉아 있습니다. 마치 수사관처럼 컴퓨터를 클릭하며 사건 파일을 열고, 단서를 찾고, 조각을 맞추어 나가는 방식으로 사건을 추적하게 됩니다.
+</p>
+
+<h4 style="margin-top: 40px;"><img src="https://win98icons.alexmeub.com/icons/png/msg_information-2.png"> 조작 방법</h4>
+<ul style="font-size:14px; line-height:1.8; padding-left: 20px;">
+  <li><b>마우스를 클릭<img src="https://win98icons.alexmeub.com/icons/png/mouse-3.png"></b>하면 사건 관련 파일이 열립니다.</li>
+  <li><b>창을 닫거나 이동<img src="https://win98icons.alexmeub.com/icons/png/executable-1.png"></b>시키면서 컴퓨터 탐색을 진행할 수 있습니다.</li>
+  <li>하단 <b>작업 표시줄<img src="https://win98icons.alexmeub.com/icons/png/windows_slanted-0.png"></b>을 통해 도움말을 확인하거나 시간을 확인할 수 있습니다.</li>
+</ul>
+
+
+  <p style="font-size:14px; margin-top: 15px;">
+    실제 수사처럼, 여러 자료를 비교하고 추리하면서 사건의 실체에 접근해보세요.
+  </p>
+</div>
+
+<!-- 오른쪽 버튼 div는 제거해도 됨 -->
+
+
+
+</div>
+
+
+<!-- 기존 HTML 생략 -->
+
+<!-- 🕵️ 탐정 안내봇 추가 -->
+<img src="img/character3.png" alt="탐정봇" class="guide-bot" id="guideBot">
+<div class="chat-bubble" id="chatBubble">안녕! 만나서 반가워. 내 이름은 <b>'미래'</b>.<br>지금부터 페이지 탐색을 도와줄거야!</div>
+
+<!-- 기존 스크립트 아래에 추가 -->
+<script>
+  const guideBot = document.getElementById('guideBot');
+  const chatBubble = document.getElementById('chatBubble');
+const messages = [
+  "안녕! 만나서 반가워. 내 이름은 <b>'미래'</b>.<br>지금부터 페이지 탐색을 도와줄거야!",
+  "이 웹페이지는 아직 해결되지 않은<br> <b>'미제사건'</b>을 세 가지 다루고 있어.",
+  "1. 포천여중생 살인사건<br> 2. 신정동동 연쇄살인사건<br> 3. 광주 여대생 살인사건",
+  "이 세 사건은 범행 과정에서<br>눈에 띄는 특이점을 가지거든.",
+  "자. 설명은 이정도로 하고, 자세한 건<br> 같이 페이지를 살펴보며 알려줄게.",
+  "우선 페이지 왼쪽 아래에 <b>'사용법' <br> 버튼</b>이 있지? 한 번 클릭해보자."
+];
+let msgIndex = 0;
+chatBubble.innerHTML = messages[msgIndex];
+
+guideBot.addEventListener('click', () => {
+  if (msgIndex < messages.length - 1) {
+    msgIndex++;
+    chatBubble.innerHTML = messages[msgIndex];
+  }
+});
+
+</script>
+<script>
+  function closeWarningWindow() {
+    const warning = document.getElementById('warning');
+    const overlay = document.getElementById('blockOverlay');
+    warning.classList.remove('open');
+    warning.style.display = 'none';
+    if (overlay) {
+      overlay.style.display = 'none';
+    }
+  }
+
+  function openWarningWindow() {
+    const win = document.getElementById('warning');
+    const overlay = document.getElementById('blockOverlay');
+    win.classList.add('open');
+    win.style.left = (window.innerWidth - win.offsetWidth) / 2 + 'px';
+    win.style.top = (window.innerHeight - win.offsetHeight) / 2 + 'px';
+    win.style.display = 'block';
+    if (overlay) {
+      overlay.style.display = 'block';
+    }
+  }
+
+  function updateTime() {
+    const now = new Date();
+    let h = now.getHours(), ap = h < 12 ? '오전' : '오후';
+    h = h % 12 || 12;
+    const m = now.getMinutes().toString().padStart(2, '0');
+    const Y = now.getFullYear();
+    const Mo = (now.getMonth() + 1).toString().padStart(2, '0');
+    const D = now.getDate().toString().padStart(2, '0');
+    document.getElementById('timeDisplay').innerHTML = `${ap} ${h}:${m}\n${Y}-${Mo}-${D}`;
+  }
+
+  window.onload = function () {
+    openWarningWindow();
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    const boxes = document.querySelectorAll('.image-box');
+    boxes.forEach(box => {
+      const img = box.querySelector('img');
+      const defaultSrc = box.getAttribute('data-default');
+      const hoverSrc = box.getAttribute('data-hover');
+
+      box.addEventListener('mouseenter', () => {
+        img.src = hoverSrc;
+      });
+
+      box.addEventListener('mouseleave', () => {
+        img.src = defaultSrc;
+      });
+
+      box.addEventListener('click', () => {
+        document.body.classList.add('fade-out');
+        const link = box.getAttribute('data-link');
+        setTimeout(() => {
+          window.location.href = link;
+        }, 500);
+      });
+    });
+  };
+
+function toggleStartMenu() {
+  const helpWindow = document.getElementById('helpWindow');
+  helpWindow.classList.toggle('open');
+  helpWindow.style.left = (window.innerWidth - helpWindow.offsetWidth) / 2 + 'px';
+  helpWindow.style.top = (window.innerHeight - helpWindow.offsetHeight) / 2 + 'px';
+
+  // 안내 메시지가 마지막 텍스트였을 경우, 다음 메시지 출력
+  if (msgIndex === messages.length - 1) {
+    chatBubble.innerHTML = "좋아. 조작법을 익혔으면, 이제 가장 왼쪽의 <br> <b>포천여중생살인사건</b> 파일을 클릭해보자.";
+  }
+}
+
+
+function closeHelpWindow() {
+  const helpWindow = document.getElementById('helpWindow');
+  helpWindow.classList.remove('open');
+}
+
+// 탐정봇 말풍선이 보일 때, 빛나는 효과 적용
+window.onload = function () {
+  openWarningWindow();
+  updateTime();
+  setInterval(updateTime, 1000);
+
+// 탐정봇에 외곽선 따라 빛 효과 추가
+guideBot.classList.add('outline-glow');
+
+
+  const boxes = document.querySelectorAll('.image-box');
+  boxes.forEach(box => {
+    const img = box.querySelector('img');
+    const defaultSrc = box.getAttribute('data-default');
+    const hoverSrc = box.getAttribute('data-hover');
+
+    box.addEventListener('mouseenter', () => {
+      img.src = hoverSrc;
+    });
+
+    box.addEventListener('mouseleave', () => {
+      img.src = defaultSrc;
+    });
+
+    box.addEventListener('click', () => {
+      document.body.classList.add('fade-out');
+      const link = box.getAttribute('data-link');
+      setTimeout(() => {
+        window.location.href = link;
+      }, 500);
+    });
+  });
+
+
+};
+
+
+
+</script>
+
+
+<div id="blockOverlay"></div>
+
+</body>
+
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>신정동 사건 대화 시뮬레이션</title>
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Pretendard Variable', sans-serif;
+      background-color: #ffffff;
+      color: #000;
+      overflow-y: hidden;
+    }
+
+    .chat-container {
+      max-width: auto;
+      margin: 0px 5px;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      border: 1px solid #ddd;
+      background-color: #f9f9f9;
+      border-radius: 0;
+      overflow: hidden;
+    }
+
+    .chat-header {
+      background-color: #f2f2f2;
+      padding: 16px 20px;
+      font-weight: 600;
+      font-size: 17px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .message {
+      display: flex;
+      margin-bottom: 30px;
+    }
+
+    .bubble {
+      padding: 14px 18px;
+      border-radius: 18px;
+      max-width: 70%;
+      font-size: 16px;
+      line-height: 1.6;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      position: relative;
+    }
+
+    .from-user {
+      justify-content: flex-end;
+    }
+
+    .from-user .bubble {
+      background-color: #007aff;
+      color: white;
+      border-radius: 16px 16px 4px 16px;
+    }
+
+    .from-victim {
+      justify-content: flex-start;
+    }
+
+    .from-victim .bubble {
+      background-color: #e6e6ea;
+      color: #000;
+      border-radius: 16px 16px 16px 4px;
+    }
+
+    .timestamp {
+      font-size: 12px;
+      color: #999;
+      margin-top: 6px;
+    }
+
+    .chat-input {
+      border-top: 1px solid #ccc;
+      padding: 14px 20px;
+      background: #fff;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .chat-input input {
+      flex: 1;
+      font-size: 16px;
+      padding: 12px 14px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    .chat-input button {
+      background-color: #007aff;
+      color: white;
+      border: none;
+      padding: 12px 16px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .chat-input button:hover {
+      background-color: #005fcc;
+    }
+
+    @media (max-width: 600px) {
+      .chat-container {
+        margin: 0;
+        border-radius: 0;
+        height: 100vh;
+      }
+      .chat-input {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-header">010-2006-0531</div> <!-- 상대 번호 표시 -->
+<div class="chat-messages">
+  <div class="message from-victim">
+    <div class="bubble">
+      인터뷰 전까지 정말 많이 망설였어요. 아직도 그날 생각하면 숨이 막혀요.
+      <div class="timestamp">오전 10:45</div>
+    </div>
+  </div>
+
+  <div class="message from-user">
+    <div class="bubble">
+      용기 내주셔서 감사합니다. 차분하게, 기억나는 대로 말씀해 주세요.
+      <div class="timestamp">오전 10:46</div>
+    </div>
+  </div>
+
+  <div class="message from-victim">
+    <div class="bubble">
+      2006년 5월 31일, 선거일이라 쉬는 날이었어요. 남자친구 만나러 목동오거리로 가던 중이었는데, 휴대폰에 정신이 팔려 목적지를 지나쳤어요. 신정역에 도착하고서야 내렸죠.
+      <div class="timestamp">오전 10:48</div>
+    </div>
+  </div>
+
+  <div class="message from-user">
+    <div class="bubble">
+      거기서 누가 접근했나요?
+      <div class="timestamp">오전 10:49</div>
+    </div>
+  </div>
+
+  <div class="message from-victim">
+    <div class="bubble">
+      네, 어떤 남자가 “잠깐 와보라”고 했어요. 무시했는데 갑자기 커터칼을 제 옆구리에 들이댔어요. 말 그대로 정신이 멍해졌고, 그대로 따라갈 수밖에 없었어요.
+      <div class="timestamp">오전 10:51</div>
+    </div>
+  </div>
+
+  <div class="message from-user">
+    <div class="bubble">
+      그때 주위에 사람은 없었나요?
+      <div class="timestamp">오전 10:52</div>
+    </div>
+  </div>
+
+  <div class="message from-victim">
+    <div class="bubble">
+      있었어요. 제가 소리를 지르니까 어떤 행인이 “괜찮으세요?”라고 했는데, 그 남자가 태연하게 “여자친구가 취했어요”라고 했고... 그분은 그냥 가셨어요.
+      <div class="timestamp">오전 10:53</div>
+    </div>
+  </div>
+
+  <div class="message from-user">
+    <div class="bubble">
+      결국 어디로 끌려간 건가요?
+      <div class="timestamp">오전 10:54</div>
+    </div>
+  </div>
+
+  <div class="message from-victim">
+    <div class="bubble">
+      신정동 주택가 쪽 반지하였어요. 들어가자마자 TV, 라디오 소리가 컸고 안쪽 방에 또 다른 남자가 있었어요. “왔어?”라고 말했어요. 누가 봐도 공범처럼 느껴졌어요.
+      <div class="timestamp">오전 10:56</div>
+    </div>
+  </div>
+
+  <div class="message from-victim">
+    <div class="bubble">
+      방 안에는 톱이 있었고, 바닥에는 줄이나 끈 같은 게 널려 있었어요. 저는 완전히 얼어붙었어요.
+      <div class="timestamp">오전 10:57</div>
+    </div>
+  </div>
+
+  <div class="message from-user">
+    <div class="bubble">
+      어떻게 탈출하신 건가요?
+      <div class="timestamp">오전 10:58</div>
+    </div>
+  </div>
+
+  <div class="message from-victim">
+    <div class="bubble">
+      갑자기 그 남자가 화장실 간다고 나가더라고요. 그 순간 문이 살짝 열린 걸 봤고, 2층 계단으로 조용히 올라가서 신발장 뒤에 숨었어요.
+      <div class="timestamp">오전 11:00</div>
+    </div>
+  </div>
+
+  <div class="message from-victim">
+    <div class="bubble">
+      거기서 엽기토끼 스티커를 봤어요. 아마 아이가 붙인 것 같았는데... 그게 계속 기억에 남았어요.
+      <div class="timestamp">오전 11:01</div>
+    </div>
+  </div>
+
+  <div class="message from-user">
+    <div class="bubble">
+      그게 ‘엽기토끼 살인사건’ 별명이 붙게 된 계기군요.
+      <div class="timestamp">오전 11:02</div>
+    </div>
+  </div>
+
+  <div class="message from-victim">
+    <div class="bubble">
+      네... 이후 범인들이 욕하면서 나왔고 “잡히면 죽여버리겠다”는 말을 했어요. 한참 뒤에 그들이 다시 들어갔을 때 틈을 타 도망쳤어요.
+      <div class="timestamp">오전 11:03</div>
+    </div>
+  </div>
+
+  <div class="message from-user">
+    <div class="bubble">
+      뛰쳐나오고 나서는 어디로 향했나요?
+      <div class="timestamp">오전 11:04</div>
+    </div>
+  </div>
+
+  <div class="message from-victim">
+    <div class="bubble">
+      근처 초등학교 담벼락이 보였고, 거기서 남자친구한테 전화했어요. 계속 울면서요. 결국 무사히 집에 갈 수 있었어요.
+      <div class="timestamp">오전 11:05</div>
+    </div>
+  </div>
+
+  <div class="message from-user">
+    <div class="bubble">
+      당시 경찰에는 이 모든 걸 말씀하셨나요?
+      <div class="timestamp">오전 11:06</div>
+    </div>
+  </div>
+
+  <div class="message from-victim">
+    <div class="bubble">
+      아니요. 너무 무서웠어요. 반지하 구조나 스티커 같은 것도, 지금 와서야 겨우 말할 수 있는 거예요.
+      <div class="timestamp">오전 11:07</div>
+    </div>
+  </div>
+
+  <div class="message from-user">
+    <div class="bubble">
+      마지막으로 용의자 인상착의 기억나시나요?
+      <div class="timestamp">오전 11:08</div>
+    </div>
+  </div>
+
+  <div class="message from-victim">
+    <div class="bubble">
+      키는 175cm쯤. 말랐지만 단단한 체격이었고, 눈썹이 정말 짙었어요. 그건 문신처럼 보였어요. 지금이라면 50대 초반일지도 몰라요.
+      <div class="timestamp">오전 11:09</div>
+    </div>
+  </div>
+    <div class="message from-user">
+    <div class="bubble">
+     제보해주셔서 감사합니다. 기억나시는 범인의 얼굴이나 생김새가 있다면, 메일로 보내주실 수 있을까요?
+      <div class="timestamp">오전 11:08</div>
+    </div>
+  </div>
+</div>
+
+
+
+    <div class="chat-input">
+      <input type="text" placeholder="아주 작은 부분이라도 괜찮습니다. 수사에 큰 도움이 됩니다." disabled />
+      <button disabled>전송</button>
+    </div>
+  </div>
+</body>
+</html>

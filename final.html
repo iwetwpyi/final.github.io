@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>김희수 사건 보고서</title>
+ <style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background-color: #e0e0e0;
+    color: #000;
+    font-family: 'Nanum Myeongjo', 'Georgia', serif;
+    display: flex;
+    height: 100vh;
+  }
+
+  /* 왼쪽 프리뷰 박스 */
+  .preview {
+    width: 250px;
+    background: #fff;
+    border-right: 1px solid #ccc;
+    overflow-y: auto;
+    padding: 20px;
+  }
+  .preview h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #444;
+    padding-bottom: 8px;
+  }
+  .preview ul {
+    list-style: none;
+  }
+  .preview li {
+    cursor: pointer;
+    padding: 10px 12px;
+    border-radius: 5px;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #222;
+    transition: background-color 0.2s;
+  }
+  .preview li:hover {
+    background-color: #f0f0f0;
+  }
+  .preview li.active {
+    background-color: #444;
+    color: #fff;
+    font-weight: 700;
+  }
+
+  /* 오른쪽 본문 슬라이드 영역 */
+  .main {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background-color: #fff;
+    font-size: 18px;
+    line-height: 1.6;
+    padding: 40px 60px;
+  }
+
+  .slide {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    font-family: 'Nanum Myeongjo', 'Georgia', serif;
+    margin: 20px;
+  }
+  .slide.active {
+    display: flex;
+    animation: fadeIn 0.6s ease-out;
+  }
+  header {
+    font-size: 36px;
+    font-weight: 700;
+    color: #000;
+    border-bottom: 2px solid #444;
+    padding-bottom: 18px;
+    margin-bottom: 30px;
+  }
+  ul {
+    list-style: none;
+    font-size: 18px;
+    line-height: 1.8;
+    color: #111;
+  }
+  ul li::before {
+    content: "\2022 ";
+    color: #444;
+    font-weight: 700;
+    margin-right: 10px;
+  }
+  footer {
+    text-align: right;
+    font-size: 14px;
+    color: #666;
+    border-top: 1px solid #ccc;
+    padding-top: 14px;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+</head>
+<body>
+
+  <nav class="preview">
+    <h2>페이지 프리뷰</h2>
+    <ul id="previewList">
+      <li class="active" data-index="0">사건 개요 (1/6)</li>
+      <li data-index="1">현장 상황 (2/6)</li>
+      <li data-index="2">사건 정황 (3/6)</li>
+      <li data-index="3">수사 내용 (4/6)</li>
+      <li data-index="4">결론 및 현황 (5/6)</li>
+      <li data-index="5">참고자료 (6/6)</li>
+    </ul>
+  </nav>
+
+  <div class="main">
+    <div class="slide active">
+      <header>사건 개요</header>
+      <ul>
+        <li>일시: 2016년 5월 10일</li>
+        <li>장소: 광주 북구 한 아파트</li>
+        <li>피해자: 김희수 (22세, 미술교육과 4학년, 임용고시 준비 중)</li>
+        <li>머리에 비닐 테이프 감긴 채 발견</li>
+        <li>20:20경, 모친 귀가 후 시신 발견</li>
+      </ul>
+      <footer>슬라이드 1/6</footer>
+    </div>
+
+    <div class="slide">
+      <header>현장 상황</header>
+      <ul>
+        <li>피해자는 침대 위에서 발견</li>
+        <li>하의가 벗겨진 상태, 비닐 테이프와 머플러로 결박</li>
+        <li>도시락, 가방 등 물건들 흩어져 있음</li>
+        <li>현관과 방 안의 핏자국 존재</li>
+        <li>사망 원인: 테이프에 의한 질식사</li>
+      </ul>
+      <footer>슬라이드 2/6</footer>
+    </div>
+
+    <div class="slide">
+      <header>사건 정황</header>
+      <ul>
+        <li>사건 당시 가족 모두 외출, 피해자 혼자 집에 있었음</li>
+        <li>범인은 최소 1시간 30분 이상 집에 머문 것으로 추정</li>
+        <li>피해자 사망 이후에도 컴퓨터 사용 흔적이 있음</li>
+      </ul>
+      <footer>슬라이드 3/6</footer>
+    </div>
+
+    <div class="slide">
+      <header>수사 내용</header>
+      <ul>
+        <li>지문, 발자국 등 물적 증거 없음</li>
+        <li>피해자 체내에서 남성 DNA 검출되었으나 분석 불가</li>
+        <li>CCTV 없음, 목격자 없음</li>
+        <li>수사에 난항을 겪고 있음</li>
+      </ul>
+      <footer>슬라이드 4/6</footer>
+    </div>
+
+    <div class="slide">
+      <header>결론 및 현황</header>
+      <ul>
+        <li>사건은 현재까지 미해결 상태</li>
+        <li>경찰은 우발적 범행 가능성에 무게를 둠</li>
+        <li>범인 및 범행 동기는 아직 확인되지 않음</li>
+      </ul>
+      <footer>슬라이드 5/6</footer>
+    </div>
+
+    <div class="slide">
+      <header>참고자료</header>
+      <ul>
+        <li>뉴스1. "'22세 여대생 피살' 광주 북구 아파트 사건 미궁", 2016.5.13.</li>
+        <li>경향신문. "[그사건 그후] 여대생 김희수 씨의 죽음", 2018.5.8.</li>
+        <li>한겨레. "[현장르포] 미제사건, 피해자 유족의 10년", 2020.5.10.</li>
+      </ul>
+      <footer>슬라이드 6/6</footer>
+    </div>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const previewItems = document.querySelectorAll('#previewList li');
+    let current = 0;
+    let isThrottled = false;
+
+    function showSlide(index) {
+      if (index < 0 || index >= slides.length) return;
+
+      slides[current].classList.remove('active');
+      previewItems[current].classList.remove('active');
+
+      slides[index].classList.add('active');
+      previewItems[index].classList.add('active');
+
+      current = index;
+    }
+
+    previewItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const idx = Number(item.dataset.index);
+        if (idx !== current) {
+          showSlide(idx);
+        }
+      });
+    });
+
+    window.addEventListener('wheel', e => {
+      if (isThrottled) return;
+
+      if (e.deltaY > 0 && current < slides.length - 1) {
+        showSlide(current + 1);
+        throttle();
+      } else if (e.deltaY < 0 && current > 0) {
+        showSlide(current - 1);
+        throttle();
+      }
+    });
+
+    function throttle() {
+      isThrottled = true;
+      setTimeout(() => { isThrottled = false; }, 600);
+    }
+  </script>
+</body>
+</html>
